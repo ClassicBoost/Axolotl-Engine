@@ -299,17 +299,13 @@ class Init extends FlxState
 		if (trueSettings.get("Custom Titlescreen"))
 			Main.switchState(this, new CustomTitlescreen());
 		else {
-			#if debug
-			Main.switchState(this, new OptionsPREState());
-			#else
-			if (showPreOptions) {
+			if (showPreOptions || Init.trueSettings.get('Debug Info')) {
 			FlxG.save.data.showPreOptions = false;
 			FlxG.save.flush();
 			Main.switchState(this, new OptionsPREState());
 			}
 			else
 			Main.switchState(this, new TitleState());
-			#end
 		}
 	}
 
@@ -317,6 +313,9 @@ class Init extends FlxState
 	{
 		// set the true settings array
 		// only the first variable will be saved! the rest are for the menu stuffs
+		if(FlxG.save.data.showPreOptions != null) {
+			showPreOptions = FlxG.save.data.showPreOptions;
+		}
 
 		// IF YOU WANT TO SAVE MORE THAN ONE VALUE MAKE YOUR VALUE AN ARRAY INSTEAD
 		for (setting in gameSettings.keys())
