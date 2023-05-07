@@ -35,6 +35,7 @@ class Alphabet extends FlxSpriteGroup
 	public var xTo = 100;
 
 	public var isMenuItem:Bool = false;
+	public var isMenuItem2:Bool = false;
 
 	public var text:String = "";
 
@@ -301,6 +302,14 @@ class Alphabet extends FlxSpriteGroup
 				x = FlxMath.lerp(x, (targetY * 20) + 90, elapsed * 6);
 			else
 				x = FlxMath.lerp(x, xTo, elapsed * 6);
+		}
+
+		if (isMenuItem2)
+		{
+			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
+
+			y = FlxMath.lerp(y, (scaledY * 120) + (FlxG.height * 0.48), elapsed * 6);
+			x = FlxMath.lerp(x, 100, elapsed * 6);
 		}
 
 		if ((text != textInit))

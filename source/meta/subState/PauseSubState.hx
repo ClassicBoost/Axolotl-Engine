@@ -20,10 +20,11 @@ class PauseSubState extends MusicBeatSubState
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Botplay', 'Practice Mode', 'Exit to menu'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
+	var extraInfo:FlxText;
 
 	public function new(x:Float, y:Float)
 	{
@@ -72,18 +73,27 @@ class PauseSubState extends MusicBeatSubState
 		levelDeaths.updateHitbox();
 		add(levelDeaths);
 
+		extraInfo = new FlxText(20, 15 + 250, 0, "", 32);
+		extraInfo.scrollFactor.set();
+		extraInfo.setFormat(Paths.font('vcr.ttf'), 32);
+		extraInfo.updateHitbox();
+		add(extraInfo);
+
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
 		levelDeaths.alpha = 0;
+		extraInfo.alpha = 0;
 
 		levelInfo.x = FlxG.width - (levelInfo.width + 20);
 		levelDifficulty.x = FlxG.width - (levelDifficulty.width + 20);
 		levelDeaths.x = FlxG.width - (levelDeaths.width + 20);
+		extraInfo.x = FlxG.width - (levelDeaths.width + 20);
 
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
 		FlxTween.tween(levelDeaths, {alpha: 1, y: levelDeaths.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
+		FlxTween.tween(extraInfo, {alpha: 1, y: extraInfo.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
@@ -129,6 +139,10 @@ class PauseSubState extends MusicBeatSubState
 		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
 
+		extraInfo.text = '';
+		if (PlayState.cpuControlled) extraInfo.text += '\nBOTPLAY';
+		if (PlayState.practiceMode) extraInfo.text += '\nPRACTICE MODE';
+
 		if (upP)
 		{
 			changeSelection(-1);
@@ -148,6 +162,10 @@ class PauseSubState extends MusicBeatSubState
 					close();
 				case "Restart Song":
 					Main.switchState(this, new PlayState());
+				case 'Botplay':
+					PlayState.cpuControlled = !PlayState.cpuControlled;
+				case 'Practice Mode':
+					PlayState.practiceMode = !PlayState.practiceMode;
 				case "Exit to menu":
 					PlayState.resetMusic();
 					PlayState.deaths = 0;

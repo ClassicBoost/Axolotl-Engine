@@ -26,7 +26,7 @@ using StringTools;
 class ClassHUD extends FlxTypedGroup<FlxBasic>
 {
 	// set up variables and stuff here
-	var scoreBar:FlxText;
+	public static var scoreBar:FlxText;
 	var scoreLast:Float = -1;
 
 	// fnf mods
@@ -43,7 +43,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	var infoDisplay:String = CoolUtil.dashToSpace(PlayState.SONG.song);
 	var diffDisplay:String = CoolUtil.difficultyFromNumber(PlayState.storyDifficulty);
-	var engineDisplay:String = "FOREVER ENGINE v" + Main.gameVersion;
+	var engineDisplay:String = "AXOLOTL ENGINE v" + Main.axolotlVersion + " (FE v" + Main.gameVersion + ")";
 
 	var textcolor:FlxColor;
 
@@ -60,7 +60,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		if (Init.trueSettings.get('Downscroll'))
 			barY = 64;
 
-		scoreBar = new FlxText(0,0, 0, scoreDisplay);
+		scoreBar = new FlxText(FlxG.width / 2, Math.floor(barY + 40), 0, scoreDisplay);
 		scoreBar.setFormat(Paths.font(PlayState.choosenfont), 18, FlxColor.WHITE);
 		scoreBar.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		updateScoreText();
@@ -68,27 +68,28 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		scoreBar.antialiasing = !PlayState.curStage.startsWith("school");
 		scoreBar.color = textcolor;
 		add(scoreBar);
-		if (Init.trueSettings.get('Downscroll'))
-			scoreBar.y = (FlxG.height - centerMark.height / 2) - 30;
-		else {
-			scoreBar.y = (FlxG.height / 24) - 10;
-		}
 
 		cornerMark = new FlxText(0, 0, 0, engineDisplay);
 		cornerMark.setFormat(Paths.font(PlayState.choosenfont), 18, FlxColor.WHITE);
 		cornerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		add(cornerMark);
+		cornerMark.alpha = 0.85;
 		cornerMark.setPosition(FlxG.width - (cornerMark.width + 5), 5);
 		cornerMark.color = textcolor;
 		cornerMark.antialiasing = !PlayState.curStage.startsWith("school");
 
-		centerMark = new FlxText(FlxG.width / 2, Math.floor(barY + 40), 0, '- ${infoDisplay + " [" + diffDisplay}] -');
+		centerMark = new FlxText(0,0, 0, '- ${infoDisplay + " [" + diffDisplay}] -');
 		centerMark.setFormat(Paths.font(PlayState.choosenfont), 24, FlxColor.WHITE);
 		centerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		add(centerMark);
 		centerMark.screenCenter(X);
 		centerMark.color = textcolor;
 		centerMark.antialiasing = !PlayState.curStage.startsWith("school");
+		if (Init.trueSettings.get('Downscroll'))
+			centerMark.y = (FlxG.height - centerMark.height / 2) - 30;
+		else {
+			centerMark.y = (FlxG.height / 24) - 10;
+		}
 
 		// counter
 		if (Init.trueSettings.get('Counter') != 'None')
@@ -126,7 +127,10 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	override public function update(elapsed:Float)
 	{
 		// pain, this is like the 7th attempt
+		if (PlayState.cpuControlled)
+			scoreBar.text = '[BOTPLAY]';
 
+		updateScoreText();
 	}
 
 	private final divider:String = " • ";
@@ -136,6 +140,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		var importSongScore = PlayState.songScore;
 		var importPlayStateCombo = PlayState.combo;
 		var importMisses = PlayState.misses;
+		if (!PlayState.cpuControlled) {
 		scoreBar.text = 'Score: $importSongScore';
 		// testing purposes
 		var displayAccuracy:Bool = Init.trueSettings.get('Display Accuracy');
@@ -145,6 +150,8 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 			scoreBar.text += divider + 'Accuracy: ' + Std.string(Math.floor(Timings.getAccuracy() * 100) / 100) + '%' + Timings.comboDisplay;
 			scoreBar.text += divider + 'Combo Breaks: ' + Std.string(PlayState.misses);
 			scoreBar.text += divider + 'Rank: ' + Std.string(Timings.returnScoreRating());
+			if (PlayState.practiceMode) scoreBar.text += divider + 'Practice Mode';
+		}
 		}
 		scoreBar.text += '\n';
 		scoreBar.x = Math.floor((FlxG.width / 2) - (scoreBar.width / 2));
@@ -167,5 +174,13 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	public static function fadeOutSongText()
 	{
 		FlxTween.tween(centerMark, {alpha: 0.7}, 4, {ease: FlxEase.linear});
+	}
+
+	public static function bopScore() {
+		if (!PlayState.cpuControlled) {
+		FlxTween.cancelTweensOf(scoreBar);
+		scoreBar.scale.set(1.075, 1.075);
+		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.25, {ease: FlxEase.cubeOut});
+		}
 	}
 }

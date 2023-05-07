@@ -91,6 +91,12 @@ class Init extends FlxState
 			'Whether to reduce movements, like icons bouncing or beat zooms in gameplay.',
 			NOT_FORCED
 		],
+		'Show Song Progression' => [
+			true,
+			Checkmark,
+			"If checked, a progress bar wil show how much time there is left in the song.",
+			NOT_FORCED
+		],
 		'Stage Opacity' => [
 			Checkmark,
 			Selector,

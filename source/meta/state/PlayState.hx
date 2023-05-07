@@ -77,6 +77,10 @@ class PlayState extends MusicBeatState
 	public static var assetModifier:String = 'base';
 	public static var changeableSkin:String = 'default';
 
+	public static var songPosBG:FlxSprite;
+	public static var songPosBar:FlxBar;
+	private var songPositionBar:Float = 0;
+
 	private var unspawnNotes:Array<Note> = [];
 	private var ratingArray:Array<String> = [];
 	private var allSicks:Bool = true;
@@ -125,6 +129,9 @@ class PlayState extends MusicBeatState
 	public static var camHUD:FlxCamera;
 	public static var camGame:FlxCamera;
 	public static var dialogueHUD:FlxCamera;
+
+	public static var cpuControlled:Bool = false;
+	public static var practiceMode:Bool = false;
 
 	public var camDisplaceX:Float = 0;
 	public var camDisplaceY:Float = 0; // might not use depending on result
@@ -367,6 +374,28 @@ class PlayState extends MusicBeatState
 		dadIcon = dadOpponent.curCharacter;
 
 		uiHUD = new ClassHUD();
+
+		songPosBG = new FlxSprite(0, 10).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
+		if (!Init.trueSettings.get('Downscroll'))
+		songPosBG.y = 10;
+		else
+		songPosBG.y = FlxG.height * 0.875;
+		songPosBG.screenCenter(X);
+		songPosBG.scrollFactor.set();
+		songPosBG.alpha = 0;
+		songPosBG.cameras = [camHUD];
+		if (Init.trueSettings.get("Show Song Progression"))
+		add(songPosBG);
+		
+		songPosBar = new FlxBar(songPosBG.x + 4, songPosBG.y + 4, LEFT_TO_RIGHT, Std.int(songPosBG.width - 8), Std.int(songPosBG.height - 8), this,
+			'songPositionBar', 0, 1);
+		songPosBar.scrollFactor.set();
+		songPosBar.numDivisions = 400;
+		songPosBar.createFilledBar(FlxColor.BLACK, dadOpponent.barColor);
+		songPosBar.alpha = 0;
+		songPosBar.cameras = [camHUD];
+		if (Init.trueSettings.get("Show Song Progression"))
+		add(songPosBar);
 
 		var barY = FlxG.height * 0.875;
 		if (Init.trueSettings.get('Downscroll'))
@@ -653,6 +682,9 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		if (cpuControlled) boyfriendStrums.autoplay = true
+		else boyfriendStrums.autoplay = false;
+
 		if (!inCutscene)
 		{
 			// pause the game if the game is allowed to pause and enter is pressed
@@ -675,7 +707,7 @@ class PlayState extends MusicBeatState
 				}
 
 				if ((FlxG.keys.justPressed.SIX))
-					boyfriendStrums.autoplay = !boyfriendStrums.autoplay;
+					cpuControlled = !cpuControlled;
 			}
 
 			///*
@@ -692,6 +724,15 @@ class PlayState extends MusicBeatState
 			{
 				// Conductor.songPosition = FlxG.sound.music.time;
 				Conductor.songPosition += elapsed * 1000;
+
+				var curTime:Float = Conductor.songPosition;
+				if(curTime < 0) curTime = 0;
+				songPositionBar = (curTime / songLength);
+
+				var songCalc:Float = (songLength - curTime);
+
+				var secondsTotal:Int = Math.floor(songCalc / 1000);
+				if(secondsTotal < 0) secondsTotal = 0;
 
 				if (!paused)
 				{
@@ -790,7 +831,7 @@ class PlayState extends MusicBeatState
 				health = 0;
 			}
 
-			if (health <= 0 && startedCountdown)
+			if ((health <= 0 && startedCountdown) && !practiceMode)
 			{
 				paused = true;
 				// startTimer.active = false;
@@ -1079,6 +1120,10 @@ class PlayState extends MusicBeatState
 					}
 				}
 
+				forceLose = false;
+
+				if (cpuControlled) songScore = 0;
+
 				if (!coolNote.isSustainNote)
 				{
 					goodNotePressed = true;
@@ -1090,6 +1135,8 @@ class PlayState extends MusicBeatState
 					health += 0.025;
 					if (Init.trueSettings.get("Anti Mash"))
 					antimashshit = true;
+
+					ClassHUD.bopScore();
 				}
 				else if (coolNote.isSustainNote)
 				{
@@ -1394,6 +1441,13 @@ class PlayState extends MusicBeatState
 				numScore.x -= ((comboString.length - 1) * 22);
 				lastCombo.push(numScore);
 				FlxTween.tween(numScore, {y: numScore.y + 20}, 0.1, {type: FlxTweenType.BACKWARD, ease: FlxEase.circOut});
+				FlxTween.tween(numScore, {"scale.x": 0, "scale.y": 0}, 0.1, {
+					onComplete: function(tween:FlxTween)
+					{
+						numScore.kill();
+					},
+					startDelay: Conductor.crochet * 0.00125
+				});
 			}
 			// hardcoded lmao
 			if (Init.trueSettings.get('Fixed Judgements'))
@@ -1604,6 +1658,10 @@ class PlayState extends MusicBeatState
 	override function stepHit()
 	{
 		super.stepHit();
+		if (curStep == 1) {
+			FlxTween.tween(songPosBG, {alpha: 1}, 1, {ease: FlxEase.linear});
+			FlxTween.tween(songPosBar, {alpha: 1}, 1, {ease: FlxEase.linear});
+		}
 		///*
 		if (songMusic.time >= Conductor.songPosition + 20 || songMusic.time <= Conductor.songPosition - 20)
 			resyncVocals();
@@ -1616,8 +1674,10 @@ class PlayState extends MusicBeatState
 			gf.dance();
 
 		if ((boyfriend.animation.curAnim.name.startsWith("idle") || boyfriend.animation.curAnim.name.startsWith("dance"))
-			&& (curBeat % 2 == 0 || boyfriend.characterData.quickDancer))
+			&& (curBeat % 2 == 0 || boyfriend.characterData.quickDancer)) {
+			forceLose = false;
 			boyfriend.dance();
+			}
 
 		// added this for opponent cus it wasn't here before and skater would just freeze
 		if ((dadOpponent.animation.curAnim.name.startsWith("idle") || dadOpponent.animation.curAnim.name.startsWith("dance"))
@@ -1639,8 +1699,6 @@ class PlayState extends MusicBeatState
 				iconP1.updateHitbox();
 				iconP2.updateHitbox();
 			}
-
-		forceLose = false;
 
 		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) && (!Init.trueSettings.get('Reduced Movements')))
 		{

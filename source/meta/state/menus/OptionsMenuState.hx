@@ -105,6 +105,7 @@ class OptionsMenuState extends MusicBeatState
 					['Accessibility Settings', null],
 					['', null],
 					['Filter', getFromOption],
+					['Show Song Progression', getFromOption],
 					['Disable Antialiasing', getFromOption],
 					["Stage Opacity", getFromOption],
 					["Opacity Type", getFromOption],
@@ -369,7 +370,7 @@ class OptionsMenuState extends MusicBeatState
 				thisOption.disableX = true;
 				// hardcoded main so it doesnt have scroll
 				if (groupName != 'main')
-					thisOption.isMenuItem = true;
+					thisOption.isMenuItem2 = true;
 				thisOption.alpha = 0.6;
 				newGroup.add(thisOption);
 			}
