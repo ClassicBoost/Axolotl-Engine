@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest an idea for this project (DO NOT TELL ME TO ADD INGAME EDITORS, I AM
   PLANNING TO ADD THOSE!)
 title: ''
-labels: duplicate, enhancement
+labels: enhancement
 assignees: ''
 
 ---
