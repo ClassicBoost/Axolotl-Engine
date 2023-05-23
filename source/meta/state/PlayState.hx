@@ -1147,6 +1147,10 @@ class PlayState extends MusicBeatState
 						healthCall(100 / coolNote.parentNote.childrenNotes.length);
 					}
 				}
+			} else {
+				if (!coolNote.isSustainNote) {
+					opponentSploosh(coolNote, characterStrums);
+				}
 			}
 
 			if (!coolNote.isSustainNote)
@@ -1385,6 +1389,13 @@ class PlayState extends MusicBeatState
 		songScore += score;
 
 		popUpCombo();
+	}
+
+	function opponentSploosh(coolNote:Note, strumline:Strumline) {
+		// play animation in existing notesplashes
+		var noteSplashRandom:String = (Std.string((FlxG.random.int(0, 1) + 1)));
+		if (strumline.splashNotes != null)
+			strumline.splashNotes.members[coolNote.noteData].playAnim('anim' + noteSplashRandom, true);
 	}
 
 	public function createSplash(coolNote:Note, strumline:Strumline)

@@ -170,11 +170,8 @@ class Strumline extends FlxTypedGroup<FlxBasic>
 			staticArrow.alpha = 0;
 			FlxTween.tween(staticArrow, {y: staticArrow.initialY, alpha: staticArrow.setAlpha}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
 
-			if (noteSplashes)
-			{
-				var noteSplash:NoteSplash = ForeverAssets.generateNoteSplashes('noteSplashes', PlayState.assetModifier, PlayState.changeableSkin, 'UI', i);
-				splashNotes.add(noteSplash);
-			}
+			var noteSplash:NoteSplash = ForeverAssets.generateNoteSplashes('noteSplashes', PlayState.assetModifier, PlayState.changeableSkin, 'UI', i);
+			splashNotes.add(noteSplash);
 		}
 
 		if (Init.trueSettings.get("Clip Style").toLowerCase() == 'stepmania')
@@ -189,6 +186,12 @@ class Strumline extends FlxTypedGroup<FlxBasic>
 
 	public function createSplash(coolNote:Note)
 	{
+		// play animation in existing notesplashes
+		var noteSplashRandom:String = (Std.string((FlxG.random.int(0, 1) + 1)));
+		splashNotes.members[coolNote.noteData].playAnim('anim' + noteSplashRandom);
+	}
+
+	function opponentSploosh(coolNote:Note) {
 		// play animation in existing notesplashes
 		var noteSplashRandom:String = (Std.string((FlxG.random.int(0, 1) + 1)));
 		splashNotes.members[coolNote.noteData].playAnim('anim' + noteSplashRandom);
