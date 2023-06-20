@@ -62,6 +62,7 @@ class Stage extends FlxTypedGroup<FlxBasic>
 		{
 			// this is because I want to avoid editing the fnf chart type
 			// custom stage stuffs will come with forever charts
+			if (PlayState.SONG.curStage == null) {
 			switch (CoolUtil.spaceToDash(PlayState.SONG.song.toLowerCase()))
 			{
 				case 'spookeez' | 'south' | 'monster':
@@ -80,6 +81,8 @@ class Stage extends FlxTypedGroup<FlxBasic>
 					curStage = 'schoolEvil';
 				default:
 					curStage = 'stage';
+			}} else {
+				curStage = PlayState.SONG.curStage;
 			}
 
 			PlayState.curStage = curStage;
@@ -373,7 +376,7 @@ class Stage extends FlxTypedGroup<FlxBasic>
 	public function returnGFtype(curStage)
 	{
 		var gfVersion:String = 'gf';
-
+		if (PlayState.SONG.curStage == null) {
 		switch (curStage)
 		{
 			case 'highway':
@@ -384,7 +387,9 @@ class Stage extends FlxTypedGroup<FlxBasic>
 				gfVersion = 'gf-pixel';
 			case 'schoolEvil':
 				gfVersion = 'gf-pixel';
-		}
+		}}
+		else
+		gfVersion = PlayState.SONG.gfVersion;
 
 		return gfVersion;
 	}
@@ -576,6 +581,11 @@ class Stage extends FlxTypedGroup<FlxBasic>
 		trainCars = 8;
 		trainFinishing = false;
 		startedMoving = false;
+	}
+
+	public function dispatchEvent(myEvent:String)
+	{
+
 	}
 
 	override function add(Object:FlxBasic):FlxBasic

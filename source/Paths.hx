@@ -258,6 +258,11 @@ class Paths
 		return getPath('songs/$key.json', TEXT, library);
 	}
 
+	static public function module(key:String, ?library:String)
+	{
+		return getPath('$key.hxs', TEXT, library);
+	}
+
 	inline static public function songJson(song:String, secondSong:String, ?library:String)
 		return getPath('songs/${song.toLowerCase()}/${secondSong.toLowerCase()}.json', TEXT, library);
 

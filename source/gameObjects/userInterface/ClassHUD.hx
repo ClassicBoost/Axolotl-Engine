@@ -45,7 +45,11 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	var diffDisplay:String = CoolUtil.difficultyFromNumber(PlayState.storyDifficulty);
 	var engineDisplay:String = "AXOLOTL ENGINE v" + Main.axolotlVersion + " (FE v" + Main.gameVersion + ")";
 
+	var composerDisplay:String;
+
 	var textcolor:FlxColor;
+
+	public static var composerTxt:FlxText;
 
 	// eep
 	public function new()
@@ -78,7 +82,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		cornerMark.color = textcolor;
 		cornerMark.antialiasing = !PlayState.curStage.startsWith("school");
 
-		centerMark = new FlxText(0,0, 0, '- ${infoDisplay + " [" + diffDisplay}] -');
+		centerMark = new FlxText(0,0, 0, '- ${infoDisplay}${(Init.trueSettings.get('Show Difficulty') ? " [" + diffDisplay + "]": "")} -');
 		centerMark.setFormat(Paths.font(PlayState.choosenfont), 24, FlxColor.WHITE);
 		centerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		add(centerMark);
@@ -90,6 +94,20 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		else {
 			centerMark.y = (FlxG.height / 24) - 10;
 		}
+		
+		composerTxt = new FlxText(5, FlxG.height - 18, 0, "BLAH", 12);
+		composerTxt.scrollFactor.set();
+		composerTxt.setFormat(Paths.font(PlayState.choosenfont), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		if (CoolUtil.coolTextFile(Paths.txt('songs/${PlayState.SONG.song.toLowerCase()}/composerTxt')) == null) // incase no composer text file
+		composerDisplay = '';
+		else composerDisplay = '' + CoolUtil.coolTextFile(Paths.txt('songs/${PlayState.SONG.song.toLowerCase()}/composerTxt'));
+		// Remove the fuckin [] from the text.
+		composerDisplay.substring(0, composerDisplay.length - 1);
+		composerDisplay.substring(composerDisplay.length - 1, 0);
+		composerTxt.text = '$composerDisplay';
+		composerTxt.y = 800;
+		composerTxt.screenCenter(X);
+		add(composerTxt);
 
 		// counter
 		if (Init.trueSettings.get('Counter') != 'None')
@@ -171,9 +189,15 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		PlayState.updateRPC(false);
 	}
 
+	public static function startDaSong() {
+		FlxTween.tween(composerTxt, {y: FlxG.height - 18}, 1, {ease: FlxEase.cubeOut});
+	}
+
 	public static function fadeOutSongText()
 	{
+		FlxTween.cancelTweensOf(composerTxt);
 		FlxTween.tween(centerMark, {alpha: 0.7}, 4, {ease: FlxEase.linear});
+		FlxTween.tween(composerTxt, {y: composerTxt.y + 50}, 1, {ease: FlxEase.cubeOut});
 	}
 
 	public static function bopScore() {

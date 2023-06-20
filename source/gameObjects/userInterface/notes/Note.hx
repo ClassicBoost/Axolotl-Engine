@@ -25,6 +25,10 @@ class Note extends FNFSprite
 	public var noteAlt:Float = 0;
 	public var noteType:Float = 0;
 	public var noteString:String = "";
+	
+	public var eventName:String = '';
+	public var eventVal1:String = '';
+	public var eventVal2:String = '';
 
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
@@ -43,6 +47,8 @@ class Note extends FNFSprite
 	public var noteVisualOffset:Float = 0;
 	public var noteSpeed:Float = 0;
 	public var noteDirection:Float = 0;
+
+	public var customScrollspeed:Bool = false;
 
 	public var parentNote:Note;
 	public var childrenNotes:Array<Note> = [];
@@ -296,5 +302,19 @@ class Note extends FNFSprite
 		}
 
 		return newNote;
+	}
+
+	function get_noteSpeed():Float {
+		return noteSpeed;
+	}
+
+	function set_noteSpeed(value:Float):Float {
+		var ratio:Float = value / noteSpeed;
+		if (customScrollspeed && isSustainNote && !animation.curAnim.name.endsWith('end')) {
+			scale.y *= ratio;
+			updateHitbox();
+		}
+		noteSpeed = value;
+		return value;
 	}
 }

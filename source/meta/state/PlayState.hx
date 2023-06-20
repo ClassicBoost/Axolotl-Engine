@@ -101,6 +101,8 @@ class PlayState extends MusicBeatState
 	public static var detailsSub:String = "";
 	public static var detailsPausedText:String = "";
 
+	private var fuckYouNoHit:Bool = false;
+
 	private static var prevCamFollow:FlxObject;
 
 	private var curSong:String = "";
@@ -119,6 +121,8 @@ class PlayState extends MusicBeatState
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var inCutscene:Bool = false;
+
+	public var useNewIconBop:Bool = true;
 
 	var canPause:Bool = true;
 
@@ -191,6 +195,7 @@ class PlayState extends MusicBeatState
 		combo = 0;
 		health = 1;
 		misses = 0;
+		fuckYouNoHit = false;
 		// sets up the combo object array
 		lastCombo = [];
 
@@ -534,7 +539,7 @@ class PlayState extends MusicBeatState
 								eligable = false;
 						}
 
-						if (eligable)
+						if (eligable && !fuckYouNoHit)
 						{
 							goodNoteHit(coolNote, boyfriend, boyfriendStrums, firstNote); // then hit the note
 							pressedNotes.push(coolNote);
@@ -634,9 +639,11 @@ class PlayState extends MusicBeatState
 
 		healthBar.percent = (health * 50);
 
+		if (!useNewIconBop) {
 		var iconLerp = 0.5;
 		iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.initialWidth, iconP1.width, iconLerp)));
 		iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.initialWidth, iconP2.width, iconLerp)));
+		}
 
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
@@ -697,13 +704,13 @@ class PlayState extends MusicBeatState
 			if (!isStoryMode)
 			{
 				// charting state (more on that later)
-				if ((FlxG.keys.justPressed.SEVEN) && (!startingSong))
+				if ((FlxG.keys.justPressed.SEVEN) && (!startingSong) && Init.trueSettings.get("Debug Info"))
 				{
 					resetMusic();
-					if (FlxG.keys.pressed.SHIFT)
+				//	if (FlxG.keys.pressed.SHIFT)
 						Main.switchState(this, new ChartingState());
-					else
-						Main.switchState(this, new OriginalChartingState());
+				//	else
+				//		Main.switchState(this, new OriginalChartingState());
 				}
 
 				if ((FlxG.keys.justPressed.SIX))
@@ -1132,9 +1139,12 @@ class PlayState extends MusicBeatState
 					if (Init.trueSettings.get("Hitsounds")) FlxG.sound.play(Paths.sound('hitsound'), 0.7);
 					if (coolNote.childrenNotes.length > 0)
 						Timings.notesHit++;
-					health += 0.025;
+					health += 0.04;
 					if (Init.trueSettings.get("Anti Mash"))
 					antimashshit = true;
+
+					if (Init.trueSettings.get("Avali Accurate"))
+						fuckYouNoHit = true;
 
 					ClassHUD.bopScore();
 				}
@@ -1148,6 +1158,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 			} else {
+				if (Init.trueSettings.get('Stage Fright') && health > 0.1) health -= 0.01;
 				if (!coolNote.isSustainNote) {
 					opponentSploosh(coolNote, characterStrums);
 				}
@@ -1374,10 +1385,12 @@ class PlayState extends MusicBeatState
 		if (baseRating == "sick")
 			// create the note splash if you hit a sick
 			createSplash(coolNote, strumline);
-		else
+		else {
 			// if it isn't a sick, and you had a sick combo, then it becomes not sick :(
 			if (allSicks)
 				allSicks = false;
+			if (Init.trueSettings.get('P Ranks Only')) health -= 9;
+		}
 
 		if (baseRating == 'miss' && goodNotePressed) // just so hitting a note extremely early/late won't give a miss
 		displayRating("shit", timing);	
@@ -1483,6 +1496,8 @@ class PlayState extends MusicBeatState
 		else
 			combo--;
 
+		if (Init.trueSettings.get('FC Mode') || Init.trueSettings.get('P Ranks Only')) health = -9;
+
 		forceLose = true;
 
 		// misses
@@ -1494,7 +1509,7 @@ class PlayState extends MusicBeatState
 		{
 			// doesnt matter miss ratings dont have timings
 			displayRating("miss", 'late');
-			health -= 0.1;
+			health -= (Init.trueSettings.get("Avali Accurate") ? 0.01 : 0.1);
 		}
 		popUpCombo();
 
@@ -1677,6 +1692,9 @@ class PlayState extends MusicBeatState
 		if (songMusic.time >= Conductor.songPosition + 20 || songMusic.time <= Conductor.songPosition - 20)
 			resyncVocals();
 		//*/
+
+		if (curStep == 1)
+			ClassHUD.startDaSong();
 	}
 
 	private function charactersDance(curBeat:Int)
@@ -1701,14 +1719,25 @@ class PlayState extends MusicBeatState
 		super.beatHit();
 
 		antimashshit = false;
+		fuckYouNoHit = false;
 
 		if (!Init.trueSettings.get('Reduced Movements'))
 			{
+				if (useNewIconBop) {
+					FlxTween.cancelTweensOf(iconP1);
+					FlxTween.cancelTweensOf(iconP2);
+		
+					iconP1.scale.set(1.3, 1.3);
+					FlxTween.tween(iconP1, {"scale.x": 1, "scale.y": 1}, 0.35, {ease: FlxEase.cubeOut});
+					iconP2.scale.set(1.3, 1.3);
+					FlxTween.tween(iconP2, {"scale.x": 1, "scale.y": 1}, 0.35, {ease: FlxEase.cubeOut});
+				} else {
 				iconP1.setGraphicSize(Std.int(iconP1.width + 30));
 				iconP2.setGraphicSize(Std.int(iconP2.width + 30));
 	
 				iconP1.updateHitbox();
 				iconP2.updateHitbox();
+				}
 			}
 
 		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) && (!Init.trueSettings.get('Reduced Movements')))
@@ -1765,6 +1794,11 @@ class PlayState extends MusicBeatState
 			FlxG.camera.zoom += 0.015;
 			for (hud in allUIs)
 				hud.zoom += 0.03;
+		}
+
+		if (curSong.toLowerCase() == 'thorns') {
+			if ((curBeat >= 64 && curBeat < 96) || (curBeat >= 160 && curBeat < 190) || (curBeat >= 256 && curBeat < 288))
+				health = FlxG.random.float(0.01, 2);
 		}
 	}
 

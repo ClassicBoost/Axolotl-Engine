@@ -29,6 +29,8 @@ class OptionsMenuState extends MusicBeatState
 	var curSelectedScript:Void->Void;
 	var curCategory:String;
 
+	var centerMark:FlxText;
+
 	var lockedMovement:Bool = false;
 
 	override public function create():Void
@@ -82,6 +84,13 @@ class OptionsMenuState extends MusicBeatState
 					['FPS Counter', getFromOption],
 					['Memory Counter', getFromOption],
 					#if !neko ['Debug Info', getFromOption], #end
+					['', null],
+					['Modifiers', null],
+					['', null],
+					['FC Mode', getFromOption],
+					['P Ranks Only', getFromOption],
+					['Stage Fright', getFromOption],
+					['Avali Accurate', getFromOption],
 				]
 			],
 			'appearance' => [
@@ -105,6 +114,7 @@ class OptionsMenuState extends MusicBeatState
 					['Accessibility Settings', null],
 					['', null],
 					['Filter', getFromOption],
+					["Show Difficulty", getFromOption],
 					['Show Song Progression', getFromOption],
 					['Disable Antialiasing', getFromOption],
 					["Stage Opacity", getFromOption],
@@ -132,6 +142,15 @@ class OptionsMenuState extends MusicBeatState
 		bg.antialiasing = true;
 		add(bg);
 
+		centerMark = new FlxText(0,0, 0, '- Test${(Init.trueSettings.get('Show Difficulty') ? " [NORMAL]": "")} -');
+		centerMark.alpha = 0;
+		centerMark.antialiasing = true;
+		centerMark.setFormat(Paths.font('vcr.ttf'), 24, FlxColor.WHITE);
+		centerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
+		centerMark.screenCenter(X);
+		centerMark.y = (FlxG.height / 24) - 10;
+		add(centerMark);
+
 		infoText = new FlxText(5, FlxG.height - 24, 0, "", 32);
 		infoText.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		infoText.textField.background = true;
@@ -151,6 +170,7 @@ class OptionsMenuState extends MusicBeatState
 		// lol we wanna kill infotext so it goes over checkmarks later
 		if (infoText != null)
 			remove(infoText);
+		remove(centerMark);
 
 		// kill previous subgroup attachments
 		if (attachments != null)
@@ -177,6 +197,7 @@ class OptionsMenuState extends MusicBeatState
 
 		// re-add
 		add(infoText);
+		add(centerMark);
 		regenInfoText();
 
 		// reset the selection
@@ -261,6 +282,32 @@ class OptionsMenuState extends MusicBeatState
 				curSelectedScript();
 
 			updateSelections();
+		}
+
+		switch (activeSubgroup.members[curSelection].text) {
+			case 'Show Difficulty':
+				centerMark.text = '- Test${(Init.trueSettings.get('Show Difficulty') ? " [NORMAL]": "")} -';
+				centerMark.setFormat(Paths.font('vcr.ttf'), 24, FlxColor.WHITE);
+				centerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
+				centerMark.screenCenter(X);
+				centerMark.y = (FlxG.height / 24) - 10;
+				centerMark.alpha = 1;
+			case 'Counter':
+				centerMark.setFormat(Paths.font('vcr.ttf'), 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				centerMark.text = 'Sick: 0\nGood: 0\nBad: 0\nShit: 0\nMiss: 0\n';
+				centerMark.x = (Init.trueSettings.get('Counter') == 'Right' ? (FlxG.width - 90) : 0);
+				centerMark.y = (FlxG.height / 2);
+				centerMark.alpha = 1;
+				if (Init.trueSettings.get('Counter') == 'None') centerMark.alpha = 0;
+			case 'Display Accuracy':
+				centerMark.y = FlxG.height * 0.875;
+				centerMark.setFormat(Paths.font('vcr.ttf'), 18, FlxColor.WHITE);
+				centerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
+				centerMark.text = 'Score: 0 ${(Init.trueSettings.get('Display Accuracy') ? ' • Accuracy: 0% • Combo Breaks: 0 • Rank: F' : '')}';
+				centerMark.alpha = 1;
+				centerMark.x = Math.floor((FlxG.width / 2) - (centerMark.width / 2));
+			default:
+				centerMark.alpha = 0;
 		}
 
 		if (Init.gameSettings.get(activeSubgroup.members[curSelection].text) != null)

@@ -82,7 +82,7 @@ class Init extends FlxState
 		'Debug Info' => [
 			false,
 			Checkmark,
-			'Whether to display information like your game state.',
+			'Whether to display information like your game state. Also allows you to use Chart editor and such',
 			NOT_FORCED
 		],
 		'Reduced Movements' => [
@@ -95,6 +95,12 @@ class Init extends FlxState
 			true,
 			Checkmark,
 			"If checked, a progress bar wil show how much time there is left in the song.",
+			NOT_FORCED
+		],
+		'Show Difficulty' => [
+			true,
+			Checkmark,
+			"If checked, the difficulty next to the song name will show.",
 			NOT_FORCED
 		],
 		'Stage Opacity' => [
@@ -218,6 +224,11 @@ class Init extends FlxState
 			"Simplifies the judgement animations, displaying only one judgement / rating sprite at a time.",
 			NOT_FORCED
 		],
+		// MODES
+		'FC Mode' => [false, Checkmark, "You cannot miss, or else you die."],
+		'Avali Accurate' => [false, Checkmark, "You will often miss and health drain is reduced"],
+		'P Ranks Only' => [false, Checkmark, "You must P rank the song to live (Aka 100% accuracy)."],
+		'Stage Fright' => [false, Checkmark, "You lose health every time they hit a note."],
 	];
 
 	public static var trueSettings:Map<String, Dynamic> = [];
