@@ -20,6 +20,7 @@ import meta.CoolUtil;
 import meta.data.Conductor;
 import meta.data.Timings;
 import meta.state.PlayState;
+import sys.FileSystem;
 
 using StringTools;
 
@@ -98,7 +99,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		composerTxt = new FlxText(5, FlxG.height - 18, 0, "BLAH", 12);
 		composerTxt.scrollFactor.set();
 		composerTxt.setFormat(Paths.font(PlayState.choosenfont), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		if (CoolUtil.coolTextFile(Paths.txt('songs/${PlayState.SONG.song.toLowerCase()}/composerTxt')) == null) // incase no composer text file
+		if (!FileSystem.exists(Paths.txt('songs/${PlayState.SONG.song.toLowerCase()}/composerTxt'))) // incase no composer text file
 		composerDisplay = '';
 		else composerDisplay = '' + CoolUtil.coolTextFile(Paths.txt('songs/${PlayState.SONG.song.toLowerCase()}/composerTxt'));
 		// Remove the fuckin [] from the text.
