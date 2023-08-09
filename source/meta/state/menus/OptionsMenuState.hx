@@ -114,6 +114,7 @@ class OptionsMenuState extends MusicBeatState
 					['Accessibility Settings', null],
 					['', null],
 					['Filter', getFromOption],
+					['Smooth Bop', getFromOption],
 					["Show Difficulty", getFromOption],
 					['Show Song Progression', getFromOption],
 					['Disable Antialiasing', getFromOption],

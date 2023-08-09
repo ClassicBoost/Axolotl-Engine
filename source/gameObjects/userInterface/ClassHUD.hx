@@ -197,7 +197,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	public static function fadeOutSongText()
 	{
 		FlxTween.cancelTweensOf(composerTxt);
-		FlxTween.tween(centerMark, {alpha: 0.7}, 4, {ease: FlxEase.linear});
+		FlxTween.tween(centerMark, {alpha: (Init.trueSettings.get('Show Song Progression') ? 0.85 : 0)}, 4, {ease: FlxEase.linear});
 		FlxTween.tween(composerTxt, {y: composerTxt.y + 50}, 1, {ease: FlxEase.cubeOut});
 	}
 
@@ -205,7 +205,11 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		if (!PlayState.cpuControlled) {
 		FlxTween.cancelTweensOf(scoreBar);
 		scoreBar.scale.set(1.075, 1.075);
+
+		if (Init.trueSettings.get('Smooth Bop'))
 		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.25, {ease: FlxEase.cubeOut});
-		}
+		else
+		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.2);
 	}
+}
 }

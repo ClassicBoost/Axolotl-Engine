@@ -64,8 +64,11 @@ class TitleState extends MusicBeatState
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 
+	public static var randoChance:Int = 0;
+
 	function startIntro()
 	{
+		randoChance = FlxG.random.int(0,100);
 		if (!initialized)
 		{
 			///*
@@ -94,9 +97,16 @@ class TitleState extends MusicBeatState
 		// logoBl.color = FlxColor.BLACK;
 
 		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
-		gfDance.frames = Paths.getSparrowAtlas('menus/base/title/gfDanceTitle');
+		gfDance.frames = Paths.getSparrowAtlas('menus/base/title/' + (randoChance == 69 ? 'bambi-mad' : 'gfDanceTitle'));
+		if (randoChance == 69) {
+		gfDance.animation.addByPrefix('idle', 'idle', 24, false);
+		gfDance.x += 100;
+		gfDance.y += 100;
+		}
+		else {
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+		}
 		gfDance.antialiasing = true;
 		add(gfDance);
 		add(logoBl);
@@ -133,7 +143,7 @@ class TitleState extends MusicBeatState
 
 		credTextShit.visible = false;
 
-		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('menus/base/title/newgrounds_logo'));
+		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('menus/base/title/newgrounds_logo' + (randoChance == 69 ? 'Bambi' : '')));
 		add(ngSpr);
 		ngSpr.visible = false;
 		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
@@ -278,10 +288,14 @@ class TitleState extends MusicBeatState
 		logoBl.animation.play('bump');
 		danceLeft = !danceLeft;
 
+		if (randoChance == 69) 
+			gfDance.animation.play('idle');
+		else {
 		if (danceLeft)
 			gfDance.animation.play('danceRight');
 		else
 			gfDance.animation.play('danceLeft');
+		}
 
 		FlxG.log.add(curBeat);
 

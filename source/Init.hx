@@ -127,6 +127,12 @@ class Init extends FlxState
 			'If enabled, mashing will make you miss. (does not work if ghost tapping is off)',
 			NOT_FORCED
 		],
+		'Smooth Bop' => [
+			true,
+			Checkmark,
+			'If enabled, icon and camera bop are smooth',
+			NOT_FORCED
+		],
 		'Opacity Type' => [
 			'UI',
 			Selector,

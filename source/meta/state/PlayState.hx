@@ -252,6 +252,9 @@ class PlayState extends MusicBeatState
 		popUpCombo(true);
 		//
 
+		if (!Init.trueSettings.get('Smooth Bop')) useNewIconBop = false;
+		else useNewIconBop = true;
+
 		stageBuild = new Stage(curStage);
 		add(stageBuild);
 
@@ -306,6 +309,12 @@ class PlayState extends MusicBeatState
 
 		// set song position before beginning
 		Conductor.songPosition = -(Conductor.crochet * 4);
+
+		if (curStage == 'apple') {
+			boyfriend.visible = false;
+			gf.visible = false;
+			dadOpponent.visible = false;
+		}
 
 		// EVERYTHING SHOULD GO UNDER THIS, IF YOU PLAN ON SPAWNING SOMETHING LATER ADD IT TO STAGEBUILD OR FOREGROUND
 		// darken everything but the arrows and ui via a flxsprite
@@ -820,10 +829,16 @@ class PlayState extends MusicBeatState
 			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
 
 			var easeLerp = 0.95;
+			if (!useNewIconBop) {
 			// camera stuffs
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom + forceZoom[0], FlxG.camera.zoom, easeLerp);
 			for (hud in allUIs)
 				hud.zoom = FlxMath.lerp(1 + forceZoom[1], hud.zoom, easeLerp);
+			} else { // basically Psych Engine smooth bop
+			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
+			for (hud in allUIs)
+				hud.zoom = FlxMath.lerp(1, hud.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125), 0, 1));
+			}
 
 			// not even forcezoom anymore but still
 			FlxG.camera.angle = FlxMath.lerp(0 + forceZoom[2], FlxG.camera.angle, easeLerp);
@@ -1153,6 +1168,7 @@ class PlayState extends MusicBeatState
 					// call updated accuracy stuffs
 					if (coolNote.parentNote != null)
 					{
+					//	Timings.updateAccuracy(100, true); // Regularly increase accuracy, I kinda don't like how your accuracy just decreases for a second, especially since it doesn't even give you any.
 						Timings.updateAccuracy(100, true, coolNote.parentNote.childrenNotes.length);
 						healthCall(100 / coolNote.parentNote.childrenNotes.length);
 					}

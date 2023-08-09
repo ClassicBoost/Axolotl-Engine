@@ -4,7 +4,9 @@ import flixel.FlxG;
 import flixel.system.FlxSound;
 import meta.data.*;
 import openfl.utils.Assets;
+import flixel.math.FlxRandom;
 import sys.FileSystem;
+import meta.state.TitleState;
 
 /**
 	This class is used as an extension to many other forever engine stuffs, please don't delete it as it is not only exclusively used in forever engine
@@ -18,7 +20,7 @@ class ForeverTools
 		// make sure the music is playing
 		if (((FlxG.sound.music != null) && (!FlxG.sound.music.playing)) || (FlxG.sound.music == null))
 		{
-			var song = (Init.trueSettings.get("Custom Titlescreen") ? Paths.music('foreverMenu') : Paths.music('freakyMenu'));
+			var song = (TitleState.randoChance == 100 ? Paths.music('foreverMenu') : TitleState.randoChance == 69 ? Paths.music('bambifreakyMenu') : Paths.music('freakyMenu'));
 			FlxG.sound.playMusic(song, (resetVolume) ? 0 : 0.7);
 			if (resetVolume)
 				FlxG.sound.music.fadeIn(4, 0, 0.7);

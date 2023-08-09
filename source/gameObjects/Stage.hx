@@ -79,6 +79,8 @@ class Stage extends FlxTypedGroup<FlxBasic>
 					curStage = 'school';
 				case 'thorns':
 					curStage = 'schoolEvil';
+				case 'apple':
+					curStage = 'apple';
 				default:
 					curStage = 'stage';
 			}} else {
@@ -337,6 +339,13 @@ class Stage extends FlxTypedGroup<FlxBasic>
 				bg.animation.play('idle');
 				bg.scrollFactor.set(0.8, 0.9);
 				bg.scale.set(6, 6);
+				add(bg);
+
+			case 'apple':
+				PlayState.defaultCamZoom = 0.9;
+				curStage = 'apple';
+				var bg:FNFSprite = new FNFSprite(0, 0).loadGraphic(Paths.image('backgrounds/' + curStage + '/apple'));
+				bg.scrollFactor.set(0, 0);
 				add(bg);
 
 			default:

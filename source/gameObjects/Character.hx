@@ -14,8 +14,21 @@ import meta.data.*;
 import meta.data.dependency.FNFSprite;
 import meta.state.PlayState;
 import openfl.utils.Assets as OpenFlAssets;
+import haxe.Json;
+import haxe.format.JsonParser;
 
 using StringTools;
+
+// This does nothing atm
+typedef CharacterFile = {
+	var image:String;
+	var healthIcon:String;
+	var healthColor:String;
+
+	var pos:String;
+	var flip:Bool;
+	var no_antialiasing:Bool;
+}
 
 typedef CharacterData =
 {
@@ -477,26 +490,38 @@ class Character extends FNFSprite
 			default:
 				// set up animations if they aren't already
 
-				// fyi if you're reading this this isn't meant to be well made, it's kind of an afterthought I wanted to mess with and
-				// I'm probably not gonna clean it up and make it an actual feature of the engine I just wanted to play other people's mods but not add their files to
-				// the engine because that'd be stealing assets
-				var fileNew = curCharacter + 'Anims';
+				// This isn't made to be good, this is just a temporary code incase the character hasn't been added to
+				// code yet. I may update this and make this better but for now this is what there is.
+				// There is currently no detection to health bar colors or custom animations.
+				var fileNew = curCharacter;
 				if (OpenFlAssets.exists(Paths.offsetTxt(fileNew)))
 				{
-					var characterAnims:Array<String> = CoolUtil.coolTextFile(Paths.offsetTxt(fileNew));
-					var characterName:String = characterAnims[0].trim();
-					frames = Paths.getSparrowAtlas('characters/sprites/$characterName');
-					for (i in 1...characterAnims.length)
-					{
-						var getterArray:Array<Array<String>> = CoolUtil.getAnimsFromTxt(Paths.offsetTxt(fileNew));
-						animation.addByPrefix(getterArray[i][0], getterArray[i][1].trim(), 24, false);
-					}
+					frames = Paths.getSparrowAtlas('characters/sprites/$curCharacter'); // xml name must go off their character name in game (for instant: bf, gf-car, senpai-angry)
+					animation.addByPrefix('idle', 'idle', 24, false); // every single animation name should go off of this.
+
+					animation.addByPrefix('singUP', 'up', 24, false);
+					animation.addByPrefix('singDOWN', 'down', 24, false);
+					animation.addByPrefix('singLEFT', 'left', 24, false);
+					animation.addByPrefix('singRIGHT', 'right', 24, false);
+	
+					animation.addByPrefix('singUP-alt', 'up alt', 24, false);
+					animation.addByPrefix('singDOWN-alt', 'down alt', 24, false);
+					animation.addByPrefix('singLEFT-alt', 'left alt', 24, false);
+					animation.addByPrefix('singRIGHT-alt', 'right alt', 24, false);
+
+					animation.addByPrefix('singUPmiss', 'up miss', 24, false);
+					animation.addByPrefix('singLEFTmiss', 'left miss', 24, false);
+					animation.addByPrefix('singRIGHTmiss', 'right miss', 24, false);
+					animation.addByPrefix('singDOWNmiss', 'down miss', 24, false);
+	
+					playAnim('idle');
 				}
 				else
 					return setCharacter(x, y, 'bf');
 		}
 
 		// set up offsets cus why not
+		// Offsets is pretty much needed lol
 		if (OpenFlAssets.exists(Paths.offsetTxt('offsets/' + curCharacter + 'Offsets')))
 		{
 			var characterOffsets:Array<String> = CoolUtil.coolTextFile(Paths.offsetTxt('offsets/' + curCharacter + 'Offsets'));
