@@ -221,10 +221,17 @@ class FreeplayState extends MusicBeatState
 		if (controls.BACK)
 		{
 			threadActive = false;
+			if (curSongPlaying != -1) ForeverTools.resetMenuMusic(false);
 			Main.switchState(this, new MainMenuState());
 		}
 
-		if (accepted)
+		if (FlxG.keys.justPressed.SPACE) {
+			changeSongPlaying();
+			for (i in 0...iconArray.length)	iconArray[i].animation.curAnim.curFrame = 0;
+			
+			iconArray[curSelected].animation.curAnim.curFrame = 2;
+		}
+		else if (accepted)
 		{
 			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(),
 				CoolUtil.difficultyArray.indexOf(existingDifficulties[curSelected][curDifficulty]));
@@ -335,7 +342,6 @@ class FreeplayState extends MusicBeatState
 		trace("curSelected: " + curSelected);
 
 		changeDiff();
-		changeSongPlaying();
 	}
 
 	function changeSongPlaying()

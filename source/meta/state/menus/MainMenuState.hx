@@ -53,9 +53,10 @@ class MainMenuState extends MusicBeatState
 
 		// background
 		bg = new FlxSprite(-85);
-		bg.loadGraphic(Paths.image('menus/base/menuBG'));
+		bg.loadGraphic(Paths.image('menus/base/menuDesat'));
 		bg.scrollFactor.x = 0;
 		bg.scrollFactor.y = 0.18;
+		bg.color = 0xFFFDE871;
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
 		bg.updateHitbox();
 		bg.screenCenter();

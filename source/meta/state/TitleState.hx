@@ -302,51 +302,56 @@ class TitleState extends MusicBeatState
 		switch (curBeat)
 		{
 			case 1:
+				#if FOREVERENGINE_WATERMARKS
+				createCoolText(['Fork by']);
+				#else
 				createCoolText(['ninjamuffin', 'phantomArcade', 'kawaisprite', 'evilsker']);
-
-			// credTextShit.visible = true;
+				#end 
 			case 3:
+				#if FOREVERENGINE_WATERMARKS
+				addMoreText('Raylo');
+				#else
 				addMoreText('present');
-			// credTextShit.text += '\npresent...';
-			// credTextShit.addText();
+				#end
 			case 4:
 				deleteCoolText();
-			// credTextShit.visible = false;
-			// credTextShit.text = 'In association \nwith';
-			// credTextShit.screenCenter();
 			case 5:
+				#if FOREVERENGINE_WATERMARKS
+				createCoolText(['Not In association', 'with']);
+				#else
 				createCoolText(['In association', 'with']);
+				#end
 			case 7:
 				addMoreText('newgrounds');
 				ngSpr.visible = true;
-			// credTextShit.text += '\nNewgrounds';
 
 			case 8:
 				deleteCoolText();
 				ngSpr.visible = false;
-			// credTextShit.visible = false;
-
-			// credTextShit.text = 'Shoutouts Tom Fulp';
-			// credTextShit.screenCenter();
 			case 9:
 				createCoolText([curWacky[0]]);
-			// credTextShit.visible = true;
 			case 11:
 				addMoreText(curWacky[1]);
-			// credTextShit.text += '\nlmao';
 			case 12:
 				deleteCoolText();
-			// credTextShit.visible = false;
-			// credTextShit.text = "Friday";
-			// credTextShit.screenCenter();
 			case 13:
+				#if FOREVERENGINE_WATERMARKS
+				addMoreText('Forever');
+				#else
 				addMoreText('Friday');
-			// credTextShit.visible = true;
+				#end
 			case 14:
+				#if FOREVERENGINE_WATERMARKS
+				addMoreText('Engine');
+				#else
 				addMoreText('Night');
-			// credTextShit.text += '\nNight';
+				#end
 			case 15:
-				addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
+				#if FOREVERENGINE_WATERMARKS
+				addMoreText('Plus');
+				#else
+				addMoreText('Funkin');
+				#end
 
 			case 16:
 				skipIntro();

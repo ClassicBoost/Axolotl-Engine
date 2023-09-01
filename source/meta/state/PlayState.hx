@@ -38,6 +38,7 @@ import openfl.display.GraphicsShader;
 import openfl.events.KeyboardEvent;
 import openfl.filters.ShaderFilter;
 import openfl.media.Sound;
+import gameObjects.StageData;
 import openfl.utils.Assets;
 import sys.io.File;
 
@@ -116,6 +117,13 @@ class PlayState extends MusicBeatState
 	public static var deaths:Int = 0;
 
 	public var generatedMusic:Bool = false;
+
+	public var BF_X:Float = 770;
+	public var BF_Y:Float = 100;
+	public var DAD_X:Float = 100;
+	public var DAD_Y:Float = 100;
+	public var GF_X:Float = 400;
+	public var GF_Y:Float = 130;
 
 	private var startingSong:Bool = false;
 	private var paused:Bool = false;
@@ -258,17 +266,33 @@ class PlayState extends MusicBeatState
 		stageBuild = new Stage(curStage);
 		add(stageBuild);
 
+		var stageData:StageFile = StageData.getStageFile(curStage);
+		if(stageData == null) { //Stage couldn't be found, create a dummy stage for preventing a crash
+			stageData = {
+				boyfriend: [770, 100],
+				girlfriend: [400, 130],
+				opponent: [100, 100]
+			};
+		}
+
+		BF_X = stageData.boyfriend[0];
+		BF_Y = stageData.boyfriend[1];
+		GF_X = stageData.girlfriend[0];
+		GF_Y = stageData.girlfriend[1];
+		DAD_X = stageData.opponent[0];
+		DAD_Y = stageData.opponent[1];
+
 		// set up characters here too
 		gf = new Character();
 		gf.adjustPos = false;
-		gf.setCharacter(300, 100, stageBuild.returnGFtype(curStage));
+		gf.setCharacter(GF_X, GF_Y, stageBuild.returnGFtype(curStage));
 		gf.scrollFactor.set(0.95, 0.95);
 
-		dadOpponent = new Character().setCharacter(50, 850, SONG.player2);
+		dadOpponent = new Character().setCharacter(DAD_X, DAD_Y, SONG.player2);
 		boyfriend = new Boyfriend();
-		boyfriend.setCharacter(750, 850, SONG.player1);
+		boyfriend.setCharacter(BF_X, BF_Y, SONG.player1);
 		// if you want to change characters later use setCharacter() instead of new or it will break
-		// this took me so long to notice, wtf.
+		// this took me so long to notice, wtf. -Classic1926
 
 		var camPos:FlxPoint = new FlxPoint(gf.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
 
@@ -1897,6 +1921,7 @@ class PlayState extends MusicBeatState
 		if (!isStoryMode)
 		{
 			Main.switchState(this, new FreeplayState());
+			ForeverTools.resetMenuMusic();
 		}
 		else
 		{

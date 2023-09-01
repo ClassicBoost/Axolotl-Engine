@@ -32,6 +32,8 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
+	<define name="FOREVERENGINE_WATERMARKS" />
+
 	<set name="BUILD_DIR" value="export" />
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />

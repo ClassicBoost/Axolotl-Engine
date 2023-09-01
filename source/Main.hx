@@ -88,7 +88,7 @@ class Main extends Sprite
 			'vs. Pico'
 		],
 		[
-			['Satin-Panties', 'High', 'Milf'],
+			['Satin', 'High', 'Mil'],
 			['mom'],
 			[FlxColor.fromRGB(203, 113, 170)],
 			'MOMMY MUST MURDER'

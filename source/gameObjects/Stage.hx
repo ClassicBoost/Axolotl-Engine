@@ -69,7 +69,7 @@ class Stage extends FlxTypedGroup<FlxBasic>
 					curStage = 'spooky';
 				case 'pico' | 'blammed' | 'philly-nice':
 					curStage = 'philly';
-				case 'milf' | 'satin-panties' | 'high':
+				case 'mil' | 'satin' | 'high':
 					curStage = 'highway';
 				case 'cocoa' | 'eggnog':
 					curStage = 'mall';
@@ -435,7 +435,7 @@ class Stage extends FlxTypedGroup<FlxBasic>
 		// REPOSITIONING PER STAGE
 		switch (curStage)
 		{
-			case 'highway':
+		/*	case 'highway':
 				boyfriend.y -= 220;
 				boyfriend.x += 260;
 
@@ -459,7 +459,7 @@ class Stage extends FlxTypedGroup<FlxBasic>
 				boyfriend.x += 200;
 				boyfriend.y += 220;
 				gf.x += 180;
-				gf.y += 300;
+				gf.y += 300;*/
 		}
 	}
 

@@ -16,7 +16,7 @@ class Discord
 	public static function initializeRPC()
 	{
 		DiscordRpc.start({
-			clientID: "1031181637863620708",
+			clientID: "1147198060913500160",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
