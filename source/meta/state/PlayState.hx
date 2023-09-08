@@ -193,6 +193,9 @@ class PlayState extends MusicBeatState
 	// stores the last combo objects in an array
 	public static var lastCombo:Array<FlxSprite>;
 
+	private var ratingsGroup:FlxTypedGroup<FlxSprite>;
+	private var scoreGroup:FlxTypedGroup<FlxSprite>;
+
 	// at the beginning of the playstate
 	override public function create()
 	{
@@ -232,6 +235,9 @@ class PlayState extends MusicBeatState
 			latedamage = 3;
 		else
 			latedamage = 1;
+
+		ratingsGroup = new FlxTypedGroup<FlxSprite>();
+		scoreGroup = new FlxTypedGroup<FlxSprite>();
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
@@ -1482,7 +1488,7 @@ class PlayState extends MusicBeatState
 		{
 			// numScore.loadGraphic(Paths.image('UI/' + pixelModifier + 'num' + stringArray[scoreInt]));
 			var numScore = ForeverAssets.generateCombo('combo', stringArray[scoreInt], (!negative ? allSicks : false), assetModifier, changeableSkin, 'UI',
-				negative, createdColor, scoreInt);
+				negative, createdColor, scoreInt, scoreGroup);
 			add(numScore);
 			// hardcoded lmao
 			if (!Init.trueSettings.get('Simply Judgements'))
@@ -1579,7 +1585,7 @@ class PlayState extends MusicBeatState
 			"oh but if the rating isn't sick why not just reset it"
 			because miss judgements can pop, and they dont mess with your sick combo
 		 */
-		var rating = ForeverAssets.generateRating('$daRating', (daRating == 'sick' ? allSicks : false), timing, assetModifier, changeableSkin, 'UI');
+		var rating = ForeverAssets.generateRating('$daRating', (daRating == 'sick' ? allSicks : false), timing, assetModifier, changeableSkin, 'UI', ratingsGroup);
 		add(rating);
 
 		if (!Init.trueSettings.get('Simply Judgements'))
