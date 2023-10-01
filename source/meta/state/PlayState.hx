@@ -67,6 +67,8 @@ class PlayState extends MusicBeatState
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
 
+	public var disableStrumCamera:Bool = false;
+
 	public static var choosenfont:String = 'vcr.ttf';
 
 	public static var campaignScore:Int = 0;
@@ -115,6 +117,9 @@ class PlayState extends MusicBeatState
 	public static var misses:Int = 0;
 
 	public static var deaths:Int = 0;
+
+	//FOR WINTER HORRORLAND
+	public var blindBG:FlxSprite;
 
 	public var generatedMusic:Bool = false;
 
@@ -224,14 +229,14 @@ class PlayState extends MusicBeatState
 		// create the game camera
 		camGame = new FlxCamera();
 
+		disableStrumCamera = false;
+
 		// create the hud camera (separate so the hud stays on screen)
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 
-		if (Init.trueSettings.get("Late Damage"))
-			latedamage = 3;
-		else
-			latedamage = 1;
+		if (Init.trueSettings.get("Late Damage")) latedamage = 3;
+		else latedamage = 1;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
@@ -392,6 +397,8 @@ class PlayState extends MusicBeatState
 		strumLines.add(dadStrums);
 		strumLines.add(boyfriendStrums);
 
+		if (curSong.toLowerCase() == 'winter-horrorland') disableStrumCamera = true;
+
 		// strumline camera setup
 		strumHUD = [];
 		for (i in 0...strumLines.length)
@@ -405,8 +412,9 @@ class PlayState extends MusicBeatState
 			FlxG.cameras.add(strumHUD[i]);
 			// set this strumline's camera to the designated camera
 			strumLines.members[i].cameras = [strumHUD[i]];
+			if (disableStrumCamera) strumLines.members[i].cameras = [camHUD];
 		}
-		add(strumLines);
+		
 
 		bfIcon = boyfriend.curCharacter;
 		dadIcon = dadOpponent.curCharacter;
@@ -450,6 +458,13 @@ class PlayState extends MusicBeatState
 		//
 
 		add(uiHUD);
+		add(strumLines);
+
+		if (curSong.toLowerCase() == 'winter-horrorland') {
+			blindBG = new FlxSprite(0).loadGraphic(Paths.image('backgrounds/mall/darkness'));
+			blindBG.cameras = [camHUD];
+			add(blindBG);
+		}
 
 		// create a hud over the hud camera for dialogue
 		dialogueHUD = new FlxCamera();
@@ -686,21 +701,13 @@ class PlayState extends MusicBeatState
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
-		if (healthBar.percent < 20 || forceLose) {
-			iconP1.animation.curAnim.curFrame = 1;
-			iconP2.animation.curAnim.curFrame = 2;
-		}
-		else if (healthBar.percent > 80) {
-			iconP1.animation.curAnim.curFrame = 2;
-			iconP2.animation.curAnim.curFrame = 1;
-		}
-		else {
-			iconP1.animation.curAnim.curFrame = 0;
-			iconP2.animation.curAnim.curFrame = 0;
-		}
-
 		if (health > 2)
 			health = 2;
+
+		iconP1.animation.curAnim.curFrame = (healthBar.percent < 20 || forceLose ? 1 : healthBar.percent > 80 ? 2 : 0);
+		iconP2.animation.curAnim.curFrame = (healthBar.percent < 20 || forceLose ? 2 : healthBar.percent > 80 ? 1 : 0);
+
+		if (curSong.toLowerCase() == 'winter-horrorland') blindBG.alpha = (1.25 - (health / 2));
 
 		// dialogue checks
 		if (dialogueBox != null && dialogueBox.alive)
@@ -1178,7 +1185,7 @@ class PlayState extends MusicBeatState
 					if (Init.trueSettings.get("Hitsounds")) FlxG.sound.play(Paths.sound('hitsound'), 0.7);
 					if (coolNote.childrenNotes.length > 0)
 						Timings.notesHit++;
-					health += 0.04;
+					if (health < 2) health += 0.04;
 					if (Init.trueSettings.get("Anti Mash"))
 					antimashshit = true;
 
@@ -1194,7 +1201,7 @@ class PlayState extends MusicBeatState
 					{
 					//	Timings.updateAccuracy(100, true); // Regularly increase accuracy, I kinda don't like how your accuracy just decreases for a second, especially since it doesn't even give you any.
 						Timings.updateAccuracy(100, true, coolNote.parentNote.childrenNotes.length);
-						healthCall(100 / coolNote.parentNote.childrenNotes.length);
+						if (health < 2) healthCall(100 / coolNote.parentNote.childrenNotes.length);
 					}
 				}
 			} else {
@@ -1733,6 +1740,11 @@ class PlayState extends MusicBeatState
 			resyncVocals();
 		//*/
 
+		switch (curSong.toLowerCase()) {
+			case 'winter-horrorland':
+				health -= 0.0015 * (misses + 1);
+		}
+
 		if (curStep == 1)
 			ClassHUD.startDaSong();
 	}
@@ -1802,44 +1814,34 @@ class PlayState extends MusicBeatState
 		// stage stuffs
 		stageBuild.stageUpdate(curBeat, boyfriend, gf, dadOpponent);
 
-		if (curSong.toLowerCase() == 'bopeebo')
-		{
-			switch (curBeat)
-			{
-				case 128, 129, 130:
-					vocals.volume = 0;
-			}
+		switch (curSong.toLowerCase()) {
+			case 'bopeebo':
+				switch (curBeat)
+				{
+					case 128, 129, 130:
+						vocals.volume = 0;
+				}
+			case 'fresh':
+				switch (curBeat)
+				{
+					case 16 | 80:
+						gfSpeed = 2;
+					case 48 | 112:
+						gfSpeed = 1;
+				}
+			case 'mil':
+				if (curBeat >= 168 && curBeat < 200	&& !Init.trueSettings.get('Reduced Movements') && FlxG.camera.zoom < 1.35)
+				{
+					FlxG.camera.zoom += 0.015;
+					for (hud in allUIs)
+						hud.zoom += 0.03;
+				}
+			case 'thorns':
+				if ((curBeat >= 64 && curBeat < 96) || (curBeat >= 160 && curBeat < 190) || (curBeat >= 256 && curBeat < 288))
+					health = FlxG.random.float(0.01, 2);
 		}
-
-		if (curSong.toLowerCase() == 'fresh')
-		{
-			switch (curBeat)
-			{
-				case 16 | 80:
-					gfSpeed = 2;
-				case 48 | 112:
-					gfSpeed = 1;
-			}
-		}
-
 		if (curBeat == 8)
 			ClassHUD.fadeOutSongText();
-
-		if (curSong.toLowerCase() == 'milf'
-			&& curBeat >= 168
-			&& curBeat < 200
-			&& !Init.trueSettings.get('Reduced Movements')
-			&& FlxG.camera.zoom < 1.35)
-		{
-			FlxG.camera.zoom += 0.015;
-			for (hud in allUIs)
-				hud.zoom += 0.03;
-		}
-
-		if (curSong.toLowerCase() == 'thorns') {
-			if ((curBeat >= 64 && curBeat < 96) || (curBeat >= 160 && curBeat < 190) || (curBeat >= 256 && curBeat < 288))
-				health = FlxG.random.float(0.01, 2);
-		}
 	}
 
 	//
@@ -2158,7 +2160,7 @@ class PlayState extends MusicBeatState
 			switch (swagCounter)
 			{
 				case 0:
-					FlxG.sound.play(Paths.sound('intro3-' + assetModifier), 0.6);
+					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/intro3'), 0.6);
 					Conductor.songPosition = -(Conductor.crochet * 4);
 				case 1:
 					var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
@@ -2177,7 +2179,7 @@ class PlayState extends MusicBeatState
 							ready.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('intro2-' + assetModifier), 0.6);
+					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/intro2'), 0.6);
 
 					Conductor.songPosition = -(Conductor.crochet * 3);
 				case 2:
@@ -2196,7 +2198,7 @@ class PlayState extends MusicBeatState
 							set.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('intro1-' + assetModifier), 0.6);
+					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/intro1'), 0.6);
 
 					Conductor.songPosition = -(Conductor.crochet * 2);
 				case 3:
@@ -2217,7 +2219,7 @@ class PlayState extends MusicBeatState
 							go.destroy();
 						}
 					});
-					FlxG.sound.play(Paths.sound('introGo-' + assetModifier), 0.6);
+					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/introGo'), 0.6);
 
 					Conductor.songPosition = -(Conductor.crochet * 1);
 			}

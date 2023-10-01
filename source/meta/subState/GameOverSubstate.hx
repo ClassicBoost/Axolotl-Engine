@@ -71,11 +71,11 @@ class GameOverSubstate extends MusicBeatSubState
 			PlayState.deaths = 0;
 
 			if (PlayState.isStoryMode)
-			{
 				Main.switchState(this, new StoryMenuState());
-			}
-			else
+			else {
 				Main.switchState(this, new FreeplayState());
+				ForeverTools.resetMenuMusic();
+			}
 		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)

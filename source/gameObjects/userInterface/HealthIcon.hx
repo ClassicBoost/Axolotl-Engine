@@ -14,6 +14,8 @@ class HealthIcon extends FlxSprite
 	public var initialWidth:Float = 0;
 	public var initialHeight:Float = 0;
 
+	var splitThing:Int = 2;
+
 	public function new(char:String = 'bf', isPlayer:Bool = false)
 	{
 		super();
@@ -38,12 +40,15 @@ class HealthIcon extends FlxSprite
 
 		antialiasing = true;
 		var iconGraphic:FlxGraphic = Paths.image('characters/icons/' + iconPath);
-		loadGraphic(iconGraphic, true, Std.int(iconGraphic.width / 3), iconGraphic.height);
+		loadGraphic(iconGraphic); // load this first
+
+		splitThing = width/3 == height ? 3 : 2; // winning icon detection
+		loadGraphic(iconGraphic, true, Std.int(iconGraphic.width / splitThing), iconGraphic.height);
 
 		initialWidth = width;
 		initialHeight = height;
 
-		animation.add('icon', [0, 1, 2], 0, false, isPlayer);
+		animation.add('icon', [0, 1, (splitThing == 3 ? 2 : 0)], 0, false, isPlayer);
 		animation.play('icon');
 		scrollFactor.set();
 	}
