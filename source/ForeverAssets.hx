@@ -23,7 +23,7 @@ class ForeverAssets
 {
 	//
 	public static function generateCombo(asset:String, number:String, allSicks:Bool, assetModifier:String = 'base', changeableSkin:String = 'default',
-			baseLibrary:String, negative:Bool, createdColor:FlxColor, scoreInt:Int, recycleGroup:FlxTypedGroup<FlxSprite>):FlxSprite
+			baseLibrary:String, negative:Bool, createdColor:FlxColor, scoreInt:Int):FlxSprite
 	{
 		var width = 100;
 		var height = 140;
@@ -33,7 +33,7 @@ class ForeverAssets
 			width = 10;
 			height = 12;
 		}
-		var newSprite:FlxSprite = recycleGroup.recycle(FlxSprite).loadGraphic(Paths.image(ForeverTools.returnSkinAsset(asset, assetModifier, changeableSkin, baseLibrary)),
+		var newSprite:FlxSprite = new FlxSprite().loadGraphic(Paths.image(ForeverTools.returnSkinAsset(asset, assetModifier, changeableSkin, baseLibrary)),
 			true, width, height);
 		switch (assetModifier)
 		{
@@ -72,7 +72,7 @@ class ForeverAssets
 	}
 
 	public static function generateRating(asset:String, perfectSick:Bool, timing:String, assetModifier:String = 'base', changeableSkin:String = 'default',
-			baseLibrary:String, recycleGroup:FlxTypedGroup<FlxSprite>):FlxSprite
+			baseLibrary:String):FlxSprite
 	{
 		var width = 500;
 		var height = 163;
@@ -81,7 +81,7 @@ class ForeverAssets
 			width = 72;
 			height = 32;
 		}
-		var rating:FlxSprite = recycleGroup.recycle(FlxSprite).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('judgements', assetModifier, changeableSkin,
+		var rating:FlxSprite = new FlxSprite().loadGraphic(Paths.image(ForeverTools.returnSkinAsset('judgements', assetModifier, changeableSkin,
 			baseLibrary)), true, width, height);
 		switch (assetModifier)
 		{
