@@ -12,9 +12,13 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import meta.MusicBeat.MusicBeatSubState;
+import flixel.addons.display.FlxBackdrop;
 import meta.data.font.Alphabet;
+import flixel.util.FlxTimer;
+import meta.data.*;
 import meta.state.*;
 import meta.state.menus.*;
+import gameObjects.userInterface.*;
 
 class PauseSubState extends MusicBeatSubState
 {
@@ -23,8 +27,16 @@ class PauseSubState extends MusicBeatSubState
 	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Botplay', 'Practice Mode', 'Exit to menu'];
 	var curSelected:Int = 0;
 
+	var startTimer:FlxTimer;
+
 	var pauseMusic:FlxSound;
 	var extraInfo:FlxText;
+
+	var bgfront:FlxBackdrop;
+
+	public static var countDown:CountdownAssets;
+
+	var bg:FlxSprite;
 
 	public function new(x:Float, y:Float)
 	{
@@ -35,7 +47,9 @@ class PauseSubState extends MusicBeatSubState
 
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
-		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
+		pauseMusic.play(false, 0/*FlxG.random.int(0, Std.int(pauseMusic.length / 2))*/);
+
+		FlxG.sound.play(Paths.sound('menus/pauseStart'));
 
 		FlxG.sound.list.add(pauseMusic);
 
@@ -43,10 +57,16 @@ class PauseSubState extends MusicBeatSubState
 		// trace('pause background');
 		#end
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0;
 		bg.scrollFactor.set();
 		add(bg);
+
+		bgfront = new FlxBackdrop(Paths.image('menus/base/checkeredBG'), 1, 1);
+		bgfront.alpha = 0;
+		bgfront.antialiasing = true;
+		bgfront.scrollFactor.set();
+		add(bgfront);
 
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
 		levelInfo.text += CoolUtil.dashToSpace(PlayState.SONG.song);
@@ -79,6 +99,8 @@ class PauseSubState extends MusicBeatSubState
 		extraInfo.updateHitbox();
 		add(extraInfo);
 
+		countDown = new CountdownAssets();
+
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
 		levelDeaths.alpha = 0;
@@ -90,6 +112,7 @@ class PauseSubState extends MusicBeatSubState
 		extraInfo.x = FlxG.width - (levelDeaths.width + 20);
 
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
+		FlxTween.tween(bgfront, {alpha: 0.6}, 1, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
 		FlxTween.tween(levelDeaths, {alpha: 1, y: levelDeaths.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
@@ -105,6 +128,8 @@ class PauseSubState extends MusicBeatSubState
 			songText.targetY = i;
 			grpMenuShit.add(songText);
 		}
+
+		add(countDown);
 
 		#if debug
 		// trace('change selection');
@@ -135,6 +160,11 @@ class PauseSubState extends MusicBeatSubState
 		// trace('updated event');
 		#end
 
+		
+		var scrollSpeed:Float = 50;
+		bgfront.x -= scrollSpeed * elapsed;
+		bgfront.y -= scrollSpeed * elapsed;
+
 		var upP = controls.UI_UP_P;
 		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
@@ -159,7 +189,7 @@ class PauseSubState extends MusicBeatSubState
 			switch (daSelected)
 			{
 				case "Resume":
-					close();
+					startCountdown();
 				case "Restart Song":
 					Main.switchState(this, new PlayState());
 				case 'Botplay':
@@ -190,7 +220,20 @@ class PauseSubState extends MusicBeatSubState
 		#end
 
 		if (pauseMusic.volume < 0.5)
-			pauseMusic.volume += 0.01 * elapsed;
+			pauseMusic.volume += 0.02 * elapsed;
+	}
+
+	private function startCountdown() {
+		var fuckCounter:Int = 0;
+		FlxTween.tween(bg, {alpha: 0}, 0.2, {ease: FlxEase.linear});
+		FlxTween.tween(bgfront, {alpha: 0}, 0.2, {ease: FlxEase.linear});
+		startTimer = new FlxTimer().start(Conductor.crochet / 2000, function(tmr:FlxTimer)
+			{
+				countDown.countdown(fuckCounter);
+	
+				fuckCounter += 1;
+				if (fuckCounter >= 5) close();
+			}, 5);
 	}
 
 	override function destroy()

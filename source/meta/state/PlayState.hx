@@ -178,6 +178,7 @@ class PlayState extends MusicBeatState
 	private var stageBuild:Stage;
 
 	public static var uiHUD:ClassHUD;
+	public static var countDown:CountdownAssets;
 
 	public static var daPixelZoom:Float = 6;
 	public static var determinedChartType:String = "";
@@ -420,6 +421,7 @@ class PlayState extends MusicBeatState
 		dadIcon = dadOpponent.curCharacter;
 
 		uiHUD = new ClassHUD();
+		countDown = new CountdownAssets();
 
 		songPosBG = new FlxSprite(0, 10).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
 		if (!Init.trueSettings.get('Downscroll'))
@@ -455,8 +457,10 @@ class PlayState extends MusicBeatState
 		reloadCharacterIcons();
 		healthBarBG.cameras = [camHUD];
 		uiHUD.cameras = [camHUD];
+		countDown.cameras = [camHUD];
 		//
 
+		add(countDown);
 		add(uiHUD);
 		add(strumLines);
 
@@ -2143,86 +2147,8 @@ class PlayState extends MusicBeatState
 
 			charactersDance(curBeat);
 
-			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-			introAssets.set('default', [
-				ForeverTools.returnSkinAsset('ready', assetModifier, changeableSkin, 'UI'),
-				ForeverTools.returnSkinAsset('set', assetModifier, changeableSkin, 'UI'),
-				ForeverTools.returnSkinAsset('go', assetModifier, changeableSkin, 'UI')
-			]);
-
-			var introAlts:Array<String> = introAssets.get('default');
-			for (value in introAssets.keys())
-			{
-				if (value == PlayState.curStage)
-					introAlts = introAssets.get(value);
-			}
-
-			switch (swagCounter)
-			{
-				case 0:
-					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/intro3'), 0.6);
-					Conductor.songPosition = -(Conductor.crochet * 4);
-				case 1:
-					var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
-					ready.scrollFactor.set();
-					ready.updateHitbox();
-
-					if (assetModifier == 'pixel')
-						ready.setGraphicSize(Std.int(ready.width * PlayState.daPixelZoom));
-
-					ready.screenCenter();
-					add(ready);
-					FlxTween.tween(ready, {y: ready.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-						ease: FlxEase.cubeInOut,
-						onComplete: function(twn:FlxTween)
-						{
-							ready.destroy();
-						}
-					});
-					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/intro2'), 0.6);
-
-					Conductor.songPosition = -(Conductor.crochet * 3);
-				case 2:
-					var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
-					set.scrollFactor.set();
-
-					if (assetModifier == 'pixel')
-						set.setGraphicSize(Std.int(set.width * PlayState.daPixelZoom));
-
-					set.screenCenter();
-					add(set);
-					FlxTween.tween(set, {y: set.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-						ease: FlxEase.cubeInOut,
-						onComplete: function(twn:FlxTween)
-						{
-							set.destroy();
-						}
-					});
-					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/intro1'), 0.6);
-
-					Conductor.songPosition = -(Conductor.crochet * 2);
-				case 3:
-					var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
-					go.scrollFactor.set();
-
-					if (assetModifier == 'pixel')
-						go.setGraphicSize(Std.int(go.width * PlayState.daPixelZoom));
-
-					go.updateHitbox();
-
-					go.screenCenter();
-					add(go);
-					FlxTween.tween(go, {y: go.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-						ease: FlxEase.cubeInOut,
-						onComplete: function(twn:FlxTween)
-						{
-							go.destroy();
-						}
-					});
-					FlxG.sound.play(Paths.sound('countdowns/$assetModifier/introGo'), 0.6);
-
-					Conductor.songPosition = -(Conductor.crochet * 1);
-			}
+			Conductor.songPosition = -(Conductor.crochet * (4 - swagCounter));
+			countDown.countdown(swagCounter);
 
 			swagCounter += 1;
 			// generateSong('fresh');

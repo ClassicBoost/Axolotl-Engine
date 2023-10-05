@@ -209,7 +209,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		if (Init.trueSettings.get('Smooth Bop'))
 		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.25, {ease: FlxEase.cubeOut});
 		else
-		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.2);
+		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.2, {ease: FlxEase.linear});
 	}
 }
 }
