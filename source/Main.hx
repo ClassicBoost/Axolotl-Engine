@@ -55,7 +55,7 @@ class Main extends Sprite
 	};
 	public static var mainClassState:Class<FlxState> = Init;
 	public static var gameVersion:String = '0.3.1';
-	public static var axolotlVersion:String = '1.1.1';
+	public static var axolotlVersion:String = '1.1.2';
 	var infoCounter:Overlay;
 
 	// heres gameweeks set up!

@@ -13,6 +13,7 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import meta.MusicBeat.MusicBeatState;
 import meta.data.dependency.Discord;
+import flixel.addons.display.FlxBackdrop;
 
 using StringTools;
 
@@ -29,8 +30,12 @@ class MainMenuState extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 
+	var bgfront:FlxBackdrop;
+
 	var optionShit:Array<String> = ['story mode', 'freeplay', 'options'];
 	var canSnap:Array<Float> = [];
+
+	public var micdUp:Bool = true;
 
 	// the create 'state'
 	override function create()
@@ -47,6 +52,8 @@ class MainMenuState extends MusicBeatState
 		#if DISCORD_RPC
 		Discord.changePresence('MENU SCREEN', 'Main Menu');
 		#end
+
+		micdUp = Init.trueSettings.get('Micd Up Menus');
 
 		// uh
 		persistentUpdate = persistentDraw = true;
@@ -78,6 +85,39 @@ class MainMenuState extends MusicBeatState
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
 
+		createMenuAssets(micdUp);
+
+		// set the camera to actually follow the camera object that was created before
+		var camLerp = Main.framerateAdjust(0.10);
+		FlxG.camera.follow(camFollow, null, camLerp);
+
+		updateSelection();
+
+		// from the base game lol
+
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "Axolotl Engine v" + Main.axolotlVersion + " (FE v" + Main.gameVersion + ")", 12);
+		versionShit.scrollFactor.set();
+		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(versionShit);
+
+		//
+	}
+
+	function createMenuAssets(enabledLol:Bool) {
+		if (enabledLol) {
+			bgfront = new FlxBackdrop(Paths.image('menus/base/checkeredBG'), 1, 1);
+			bgfront.antialiasing = true;
+			bgfront.color = bg.color;
+			bgfront.scrollFactor.set();
+			add(bgfront);
+
+			var bg:FlxSprite = new FlxSprite(0);
+			bg.loadGraphic(Paths.image('menus/base/micdUp/mainBG'));
+			bg.antialiasing = true;
+			bg.scrollFactor.set();
+			add(bg);
+		}
+
 		// add the menu items
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -100,43 +140,24 @@ class MainMenuState extends MusicBeatState
 			// menuItem.alpha = 0;
 
 			// placements
-			menuItem.screenCenter(X);
-			// if the id is divisible by 2
-			if (menuItem.ID % 2 == 0)
-				menuItem.x += 1000;
-			else
-				menuItem.x -= 1000;
+			if (!enabledLol) {
+				menuItem.screenCenter(X);
+
+				// if the id is divisible by 2
+				if (menuItem.ID % 2 == 0)
+					menuItem.x += 1000;
+				else
+					menuItem.x -= 1000;
+			} else {
+				menuItem.x = 0;
+			}
 
 			// actually add the item
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
 			menuItem.updateHitbox();
-
-			/*
-				FlxTween.tween(menuItem, {alpha: 1, x: ((FlxG.width / 2) - (menuItem.width / 2))}, 0.35, {
-					ease: FlxEase.smootherStepInOut,
-					onComplete: function(tween:FlxTween)
-					{
-						canSnap[i] = 0;
-					}
-			});*/
 		}
-
-		// set the camera to actually follow the camera object that was created before
-		var camLerp = Main.framerateAdjust(0.10);
-		FlxG.camera.follow(camFollow, null, camLerp);
-
-		updateSelection();
-
-		// from the base game lol
-
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "Axolotl Engine v" + Main.axolotlVersion + " (FE v" + Main.gameVersion + ")", 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
-
-		//
 	}
 
 	// var colorTest:Float = 0;
@@ -147,6 +168,12 @@ class MainMenuState extends MusicBeatState
 	{
 		// colorTest += 0.125;
 		// bg.color = FlxColor.fromHSB(colorTest, 100, 100, 0.5);
+
+		if (micdUp) {
+			var scrollSpeed:Float = 50;
+			bgfront.x -= scrollSpeed * elapsed;
+			bgfront.y -= scrollSpeed * elapsed;
+		}
 
 		var up = controls.UI_UP;
 		var down = controls.UI_DOWN;

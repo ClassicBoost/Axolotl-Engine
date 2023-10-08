@@ -230,6 +230,7 @@ class Init extends FlxState
 			"Simplifies the judgement animations, displaying only one judgement / rating sprite at a time.",
 			NOT_FORCED
 		],
+		'Micd Up Menus' => [false, Checkmark, "Changes the menus to be mic\'d up. (VERY UNFINISHED!)"],
 		// MODES
 		'FC Mode' => [false, Checkmark, "You cannot miss, or else you die."],
 		'Avali Accurate' => [false, Checkmark, "You will often miss and health drain is reduced"],

@@ -121,6 +121,7 @@ class OptionsMenuState extends MusicBeatState
 					["Stage Opacity", getFromOption],
 					["Opacity Type", getFromOption],
 					['Reduced Movements', getFromOption],
+					['Micd Up Menus', getFromOption],
 				]
 			]
 		];
@@ -357,8 +358,9 @@ class OptionsMenuState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			if (curCategory != 'main')
 				loadSubgroup('main');
-			else
-				Main.switchState(this, new MainMenuState());
+			else {
+				exitOptions();
+			}
 		}
 	}
 
@@ -636,10 +638,15 @@ class OptionsMenuState extends MusicBeatState
 			lockedMovement = true;
 			FlxFlicker.flicker(activeSubgroup.members[curSelection], 0.5, 0.06 * 2, true, false, function(flick:FlxFlicker)
 			{
-				Main.switchState(this, new MainMenuState());
+				exitOptions();
 				lockedMovement = false;
 			});
 		}
 		//
+	}
+
+	function exitOptions() {
+		if (!PlayState.inSong) Main.switchState(this, new MainMenuState());
+		else Main.switchState(this, new PlayState());
 	}
 }
