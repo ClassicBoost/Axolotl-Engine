@@ -60,6 +60,8 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 		textcolor = 0xFFFFFFFF;
 
+		var stupidAnti:Bool = (!PlayState.curStage.startsWith("school") && !Init.trueSettings.get('Disable Antialiasing'));
+
 		// le healthbar setup
 		var barY = FlxG.height * 0.875;
 		if (Init.trueSettings.get('Downscroll'))
@@ -70,7 +72,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		scoreBar.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		updateScoreText();
 		// scoreBar.scrollFactor.set();
-		scoreBar.antialiasing = !PlayState.curStage.startsWith("school");
+		scoreBar.antialiasing = stupidAnti;
 		scoreBar.color = textcolor;
 		add(scoreBar);
 
@@ -81,7 +83,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		cornerMark.alpha = 0.85;
 		cornerMark.setPosition(FlxG.width - (cornerMark.width + 5), 5);
 		cornerMark.color = textcolor;
-		cornerMark.antialiasing = !PlayState.curStage.startsWith("school");
+		cornerMark.antialiasing = stupidAnti;
 
 		centerMark = new FlxText(0,0, 0, '- ${infoDisplay}${(Init.trueSettings.get('Show Difficulty') ? " [" + diffDisplay + "]": "")} -');
 		centerMark.setFormat(Paths.font(PlayState.choosenfont), 24, FlxColor.WHITE);
@@ -89,7 +91,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		add(centerMark);
 		centerMark.screenCenter(X);
 		centerMark.color = textcolor;
-		centerMark.antialiasing = !PlayState.curStage.startsWith("school");
+		centerMark.antialiasing = stupidAnti;
 		if (Init.trueSettings.get('Downscroll'))
 			centerMark.y = (FlxG.height - centerMark.height / 2) - 30;
 		else {
@@ -106,6 +108,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		composerDisplay.substring(0, composerDisplay.length - 1);
 		composerDisplay.substring(composerDisplay.length - 1, 0);
 		composerTxt.text = '$composerDisplay';
+		composerTxt.antialiasing = stupidAnti;
 		composerTxt.y = 800;
 		composerTxt.screenCenter(X);
 		add(composerTxt);
@@ -129,6 +132,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 				textAsset.setFormat(Paths.font(PlayState.choosenfont), counterTextSize, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				textAsset.scrollFactor.set();
 				textAsset.color = textcolor;
+				textAsset.antialiasing = stupidAnti;
 				timingsMap.set(judgementNameArray[i], textAsset);
 				add(textAsset);
 			}

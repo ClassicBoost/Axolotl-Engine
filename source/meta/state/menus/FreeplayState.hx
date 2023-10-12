@@ -23,6 +23,7 @@ import openfl.media.Sound;
 import sys.FileSystem;
 import sys.thread.Mutex;
 import sys.thread.Thread;
+import flixel.addons.display.FlxBackdrop;
 
 using StringTools;
 
@@ -54,6 +55,8 @@ class FreeplayState extends MusicBeatState
 	private var mainColor = FlxColor.WHITE;
 	private var bg:FlxSprite;
 	private var scoreBG:FlxSprite;
+
+	var bgfront:FlxBackdrop;
 
 	private var existingSongs:Array<String> = [];
 	private var existingDifficulties:Array<Array<String>> = [];
@@ -107,6 +110,14 @@ class FreeplayState extends MusicBeatState
 		// LOAD CHARACTERS
 		bg = new FlxSprite().loadGraphic(Paths.image('menus/base/menuDesat'));
 		add(bg);
+
+		if (MainMenuState.micdUp) {
+			bgfront = new FlxBackdrop(Paths.image('menus/base/checkeredBG'), 1, 1);
+			bgfront.antialiasing = true;
+			bgfront.color = bg.color;
+			bgfront.scrollFactor.set();
+			add(bgfront);
+		}
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
@@ -207,6 +218,12 @@ class FreeplayState extends MusicBeatState
 		var upP = controls.UI_UP_P;
 		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
+
+		if (MainMenuState.micdUp) {
+			var scrollSpeed:Float = 50;
+			bgfront.x -= scrollSpeed * elapsed;
+			bgfront.y -= scrollSpeed * elapsed;
+		}
 
 		if (upP)
 			changeSelection(-1);

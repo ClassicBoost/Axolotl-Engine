@@ -85,10 +85,16 @@ class Init extends FlxState
 			'Whether to display information like your game state. Also allows you to use Chart editor and such',
 			NOT_FORCED
 		],
-		'Reduced Movements' => [
-			false,
+		'Camera Bop' => [
+			true,
 			Checkmark,
-			'Whether to reduce movements, like icons bouncing or beat zooms in gameplay.',
+			'Allow camera zooming in?',
+			NOT_FORCED
+		],
+		'Icon Bop' => [
+			true,
+			Checkmark,
+			'Allow icon bops?',
 			NOT_FORCED
 		],
 		'Show Song Progression' => [

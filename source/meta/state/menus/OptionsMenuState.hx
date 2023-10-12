@@ -12,6 +12,7 @@ import gameObjects.userInterface.menu.Checkmark;
 import gameObjects.userInterface.menu.Selector;
 import meta.MusicBeat.MusicBeatState;
 import meta.data.dependency.Discord;
+import gameObjects.*;
 import meta.data.dependency.FNFSprite;
 import meta.data.font.Alphabet;
 import meta.subState.OptionsSubstate;
@@ -32,6 +33,8 @@ class OptionsMenuState extends MusicBeatState
 	var centerMark:FlxText;
 
 	var lockedMovement:Bool = false;
+
+	private var boyfriend:Character;
 
 	override public function create():Void
 	{
@@ -106,10 +109,15 @@ class OptionsMenuState extends MusicBeatState
 					['', null],
 					["Note Skin", getFromOption],
 					["Clip Style", getFromOption],
-					['No Camera Note Movement', getFromOption],
 					['Disable Note Splashes', getFromOption],
 					['Opaque Arrows', getFromOption],
 					['Opaque Holds', getFromOption],
+					['', null],
+					['Movements', null],
+					['', null],
+					['No Camera Note Movement', getFromOption],
+					['Camera Bop', getFromOption],
+					['Icon Bop', getFromOption],
 					['', null],
 					['Accessibility Settings', null],
 					['', null],
@@ -120,7 +128,6 @@ class OptionsMenuState extends MusicBeatState
 					['Disable Antialiasing', getFromOption],
 					["Stage Opacity", getFromOption],
 					["Opacity Type", getFromOption],
-					['Reduced Movements', getFromOption],
 					['Micd Up Menus', getFromOption],
 				]
 			]
@@ -158,6 +165,11 @@ class OptionsMenuState extends MusicBeatState
 		infoText.textField.background = true;
 		infoText.textField.backgroundColor = FlxColor.BLACK;
 		add(infoText);
+
+		boyfriend = new Boyfriend();
+		boyfriend.setCharacter(900, 500, 'bf');
+		boyfriend.visible = false;
+		add(boyfriend);
 
 		loadSubgroup('main');
 	}
@@ -308,8 +320,12 @@ class OptionsMenuState extends MusicBeatState
 				centerMark.text = 'Score: 0 ${(Init.trueSettings.get('Display Accuracy') ? ' • Accuracy: 0% • Combo Breaks: 0 • Rank: F' : '')}';
 				centerMark.alpha = 1;
 				centerMark.x = Math.floor((FlxG.width / 2) - (centerMark.width / 2));
+			case 'Disable Antialiasing':
+				boyfriend.visible = true;
+				boyfriend.antialiasing = !Init.trueSettings.get('Disable Antialiasing');
 			default:
 				centerMark.alpha = 0;
+				boyfriend.visible = false;
 		}
 
 		if (Init.gameSettings.get(activeSubgroup.members[curSelection].text) != null)

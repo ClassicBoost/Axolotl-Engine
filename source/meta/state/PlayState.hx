@@ -1785,12 +1785,9 @@ class PlayState extends MusicBeatState
 
 		bopIcons();
 
-		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) && (!Init.trueSettings.get('Reduced Movements')))
+		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0))
 		{
-			FlxG.camera.zoom += 0.015;
-			camHUD.zoom += 0.05;
-			for (hud in strumHUD)
-				hud.zoom += 0.05;
+			cameraBop();
 		}
 
 		if (SONG.notes[Math.floor(curStep / 16)] != null)
@@ -1823,11 +1820,9 @@ class PlayState extends MusicBeatState
 						gfSpeed = 1;
 				}
 			case 'mil':
-				if (curBeat >= 168 && curBeat < 200	&& !Init.trueSettings.get('Reduced Movements') && FlxG.camera.zoom < 1.35)
+				if (curBeat >= 168 && curBeat < 200)
 				{
-					FlxG.camera.zoom += 0.015;
-					for (hud in allUIs)
-						hud.zoom += 0.03;
+					cameraBop();
 				}
 			case 'thorns':
 				if ((curBeat >= 64 && curBeat < 96) || (curBeat >= 160 && curBeat < 190) || (curBeat >= 256 && curBeat < 288))
@@ -1838,7 +1833,7 @@ class PlayState extends MusicBeatState
 	}
 
 	function bopIcons() {
-		if (!Init.trueSettings.get('Reduced Movements'))
+		if (Init.trueSettings.get('Icon Bop'))
 			{
 				iconP1.setGraphicSize(Std.int(iconP1.width + 30));
 				iconP2.setGraphicSize(Std.int(iconP2.width + 30));
@@ -1846,6 +1841,15 @@ class PlayState extends MusicBeatState
 				iconP1.updateHitbox();
 				iconP2.updateHitbox();
 			}
+	}
+
+	function cameraBop(?gamecam:Float = 0.015, ?gamehud:Float = 0.03) {
+		if (Init.trueSettings.get('Camera Bop') && FlxG.camera.zoom < 1.35) {
+			FlxG.camera.zoom += gamecam;
+			camHUD.zoom += gamehud;
+			for (hud in strumHUD)
+				hud.zoom += gamehud;
+		}
 	}
 
 	//

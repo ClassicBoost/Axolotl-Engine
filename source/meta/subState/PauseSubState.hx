@@ -36,6 +36,8 @@ class PauseSubState extends MusicBeatSubState
 
 	public static var countDown:CountdownAssets;
 
+	private var disableControls:Bool = false;
+
 	var bg:FlxSprite;
 
 	public function new(x:Float, y:Float)
@@ -52,6 +54,8 @@ class PauseSubState extends MusicBeatSubState
 		FlxG.sound.play(Paths.sound('menus/pauseStart'));
 
 		FlxG.sound.list.add(pauseMusic);
+
+		disableControls = false;
 
 		#if debug
 		// trace('pause background');
@@ -173,6 +177,7 @@ class PauseSubState extends MusicBeatSubState
 		if (PlayState.cpuControlled) extraInfo.text += '\nBOTPLAY';
 		if (PlayState.practiceMode) extraInfo.text += '\nPRACTICE MODE';
 
+		if (!disableControls) {
 		if (upP)
 		{
 			changeSelection(-1);
@@ -190,6 +195,7 @@ class PauseSubState extends MusicBeatSubState
 			{
 				case "Resume":
 					startCountdown();
+					disableControls = true;
 				case "Restart Song":
 					Main.switchState(this, new PlayState());
 				case 'Botplay':
@@ -210,6 +216,7 @@ class PauseSubState extends MusicBeatSubState
 						ForeverTools.resetMenuMusic();
 					}
 			}
+		}
 		}
 
 		if (FlxG.keys.justPressed.J)

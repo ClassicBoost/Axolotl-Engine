@@ -35,7 +35,7 @@ class MainMenuState extends MusicBeatState
 	var optionShit:Array<String> = ['story mode', 'freeplay', 'options'];
 	var canSnap:Array<Float> = [];
 
-	public var micdUp:Bool = true;
+	public static var micdUp:Bool = true;
 
 	// the create 'state'
 	override function create()
