@@ -1079,10 +1079,15 @@ class PlayState extends MusicBeatState
 								for (note in daNote.childrenNotes)
 									note.tooLate = true;
 
-								vocals.volume = 0;
-								missNoteCheck((Init.trueSettings.get('Ghost Tapping') || antimashshit) ? true : false, daNote.noteData, boyfriend, true);
-								// ambiguous name
-								Timings.updateAccuracy(0);
+								switch (daNote.noteType) {
+									case 1:
+										// do nothing :|
+									default:
+										vocals.volume = 0;
+										missNoteCheck(((Init.trueSettings.get('Ghost Tapping') || antimashshit)) ? true : false, daNote.noteData, boyfriend, true);
+										// ambiguous name
+										Timings.updateAccuracy(0);
+								}
 							}
 							else if (daNote.isSustainNote)
 							{
@@ -1100,7 +1105,7 @@ class PlayState extends MusicBeatState
 										}
 										if (!breakFromLate)
 										{
-											missNoteCheck((Init.trueSettings.get('Ghost Tapping') || antimashshit) ? true : false, daNote.noteData, boyfriend, true);
+											missNoteCheck(((Init.trueSettings.get('Ghost Tapping') || antimashshit)) ? true : false, daNote.noteData, boyfriend, true);
 											for (note in parentNote.childrenNotes)
 												note.tooLate = true;
 										}
@@ -1187,6 +1192,9 @@ class PlayState extends MusicBeatState
 
 				if (cpuControlled) songScore = 0;
 
+				if (coolNote.noteType == 1) {
+					missNoteCheck(true, coolNote.noteData, boyfriend, true);
+				} else {
 				if (!coolNote.isSustainNote)
 				{
 					goodNotePressed = true;
@@ -1213,6 +1221,7 @@ class PlayState extends MusicBeatState
 						Timings.updateAccuracy(100, true, coolNote.parentNote.childrenNotes.length);
 						if (health < 2) healthCall(100 / coolNote.parentNote.childrenNotes.length);
 					}
+				}
 				}
 			} else {
 				if (Init.trueSettings.get('Stage Fright') && health > 0.1) health -= 0.01;

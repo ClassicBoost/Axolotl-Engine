@@ -96,6 +96,8 @@ class ChartingState extends MusicBeatState
 	var playTicksBf:FlxUICheckBox = null;
 	var playTicksDad:FlxUICheckBox = null;
 
+	var noteInfoShit:String = 'Default';
+
 	override function create()
 	{
 		super.create();
@@ -774,6 +776,20 @@ class ChartingState extends MusicBeatState
 			}
 		}
 
+		if (FlxG.keys.pressed.ONE) {
+			curNoteType = 1;
+		}
+		if (FlxG.keys.pressed.ZERO) {
+			curNoteType = 0;
+		}
+
+		switch (curNoteType) {
+			case 1:
+				noteInfoShit = 'HURT';
+			default:
+				noteInfoShit = 'Default';
+		}
+
 		_song.bpm = tempBpm;
 
 		/* if (FlxG.keys.justPressed.UP)
@@ -794,6 +810,8 @@ class ChartingState extends MusicBeatState
 			+ Std.string(FlxMath.roundDecimal(songMusic.length / 1000, 2))
 			+ "\nSection: "
 			+ curSection
+			+ '\nNote Type: '
+			+ noteInfoShit
 			+ "\ncurBeat: "
 			+ curBeat
 			+ "\ncurStep: "
@@ -1029,8 +1047,7 @@ class ChartingState extends MusicBeatState
 			note.y = Math.floor(getYfromStrum((daStrumTime - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps)));
 			note.mustPress = _song.notes[curSection].mustHitSection;
 
-			if (i[1] > 3)
-				note.mustPress = !note.mustPress;
+			if (i[1] > 3) note.mustPress = !note.mustPress;
 
 			curRenderedNotes.add(note);
 

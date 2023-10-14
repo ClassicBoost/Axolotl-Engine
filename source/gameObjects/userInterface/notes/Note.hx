@@ -23,7 +23,7 @@ class Note extends FNFSprite
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
 	public var noteAlt:Float = 0;
-	public var noteType:Float = 0;
+	public var noteType:Int = 0;
 	public var noteString:String = "";
 	
 	public var eventName:String = '';
@@ -34,6 +34,8 @@ class Note extends FNFSprite
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
+
+	public static var whatItNeeds:String = '';
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
@@ -110,9 +112,11 @@ class Note extends FNFSprite
 
 		these are for all your custom note needs
 	**/
+	
 	public static function returnDefaultNote(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
 	{
 		var newNote:Note = new Note(strumTime, noteData, noteAlt, prevNote, isSustainNote);
+		newNote.noteType = noteType;
 
 		// frames originally go here
 		switch (assetModifier)
@@ -146,8 +150,14 @@ class Note extends FNFSprite
 				newNote.setGraphicSize(Std.int(newNote.width * PlayState.daPixelZoom));
 				newNote.updateHitbox();
 			default: // base game arrows for no reason whatsoever
-				newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
+			switch (noteType) {
+				case 1:
+					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('HURTNOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
 					'noteskins/notes'));
+				default:
+					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
+					'noteskins/notes'));
+			}
 				newNote.animation.addByPrefix('greenScroll', 'green0');
 				newNote.animation.addByPrefix('redScroll', 'red0');
 				newNote.animation.addByPrefix('blueScroll', 'blue0');
