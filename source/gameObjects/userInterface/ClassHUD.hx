@@ -44,7 +44,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	var infoDisplay:String = CoolUtil.dashToSpace(PlayState.SONG.song);
 	var diffDisplay:String = CoolUtil.difficultyFromNumber(PlayState.storyDifficulty);
-	var engineDisplay:String = "AXOLOTL ENGINE v" + Main.axolotlVersion + " (FE v" + Main.gameVersion + ")";
+	var engineDisplay:String = "FOREVER ENGINE v" + Main.gameVersion + "\nAXOLOTL ENGINE v" + Main.axolotlVersion + '\n';
 
 	var composerDisplay:String;
 
@@ -80,7 +80,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		cornerMark.setFormat(Paths.font(PlayState.choosenfont), 18, FlxColor.WHITE);
 		cornerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		add(cornerMark);
-		cornerMark.alpha = 0.85;
+		cornerMark.alpha = 0.8;
 		cornerMark.setPosition(FlxG.width - (cornerMark.width + 5), 5);
 		cornerMark.color = textcolor;
 		cornerMark.antialiasing = stupidAnti;

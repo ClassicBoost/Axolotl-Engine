@@ -1,6 +1,8 @@
 If you are looking for the OG Forever Engine here is the [repository](https://github.com/CrowPlexus/Forever-Engine-Legacy)
 <br>
 
+Dev Mode will be enabled by default, turn this off when releasing if you don't want players to cheat or something (found in Main.hx).<br>
+
 Now onto the Forever Engine README
 -----------------------------------------------
 <p align="center">

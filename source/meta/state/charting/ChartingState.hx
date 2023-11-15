@@ -38,6 +38,7 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
+import meta.data.FlxUIDropDownMenuCustom;
 
 using StringTools;
 
@@ -100,13 +101,15 @@ class ChartingState extends MusicBeatState
 
 	var noteInfoShit:String = 'Default';
 
+	var bg:FlxSprite;
+
 	override function create()
 	{
 		super.create();
 
 		curSection = lastSection;
 
-		var bg:FlxSprite = new FlxSprite(0).loadGraphic(Paths.image('menus/base/menuDesat'));
+		bg = new FlxSprite(0).loadGraphic(Paths.image('menus/base/menuDesat'));
 		bg.scrollFactor.x = 0;
 		bg.scrollFactor.y = 0;
 		bg.updateHitbox();
@@ -243,6 +246,8 @@ class ChartingState extends MusicBeatState
 			}
 		};
 
+		var tab_group_song = new FlxUI(null, UI_box);
+
 		var saveButton:FlxButton = new FlxButton(110, 8, "Save", function()
 		{
 			saveLevel();
@@ -274,28 +279,30 @@ class ChartingState extends MusicBeatState
 
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 
-		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		tab_group_song.add(new FlxText(10, 100, 0, 'Player'));
+
+		var player1DropDown = new FlxUIDropDownMenuCustom(10, 120, FlxUIDropDownMenuCustom.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
 			updateHeads();
 		});
 		player1DropDown.selectedLabel = _song.player1;
-
-		var player2DropDown = new FlxUIDropDownMenu(140, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		tab_group_song.add(new FlxText(140, 100, 0, 'Opponent'));
+		var player2DropDown = new FlxUIDropDownMenuCustom(140, 120, FlxUIDropDownMenuCustom.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player2 = characters[Std.parseInt(character)];
 			updateHeads();
 		});
 		player2DropDown.selectedLabel = _song.player2;
-
-		var playerGFDropDown = new FlxUIDropDownMenu(10, 150, FlxUIDropDownMenu.makeStrIdLabelArray(gfs, true), function(character:String)
+		tab_group_song.add(new FlxText(10, 140, 0, 'Girlfriend'));
+		var playerGFDropDown = new FlxUIDropDownMenuCustom(10, 160, FlxUIDropDownMenuCustom.makeStrIdLabelArray(gfs, true), function(character:String)
 		{
 			_song.gfVersion = gfs[Std.parseInt(character)];
 			updateHeads();
 		});
 		playerGFDropDown.selectedLabel = _song.gfVersion;
-
-		var daStageDropDown = new FlxUIDropDownMenu(140, 150, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(character:String)
+		tab_group_song.add(new FlxText(140, 140, 0, 'Stage'));
+		var daStageDropDown = new FlxUIDropDownMenuCustom(140, 160, FlxUIDropDownMenuCustom.makeStrIdLabelArray(stages, true), function(character:String)
 		{
 			_song.curStage = stages[Std.parseInt(character)];
 		});
@@ -303,8 +310,10 @@ class ChartingState extends MusicBeatState
 
 		var assetModifiers:Array<String> = CoolUtil.returnAssetsLibrary('UI/default');
 
-		var assetModifierDropDown = new FlxUIDropDownMenu(player2DropDown.x, playerGFDropDown.y + 100,
-			FlxUIDropDownMenu.makeStrIdLabelArray(assetModifiers, true), function(character:String)
+		tab_group_song.add(new FlxText(player2DropDown.x, playerGFDropDown.y + 110, 0, 'UI'));
+
+		var assetModifierDropDown = new FlxUIDropDownMenuCustom(player2DropDown.x, playerGFDropDown.y + 130,
+			FlxUIDropDownMenuCustom.makeStrIdLabelArray(assetModifiers, true), function(character:String)
 		{
 			_song.assetModifier = assetModifiers[Std.parseInt(character)];
 		});
@@ -316,7 +325,6 @@ class ChartingState extends MusicBeatState
 		playTicksDad = new FlxUICheckBox(check_mute_inst.x + 120, playTicksBf.y, null, null, 'Play Hitsounds (Opponent - in editor)', 100);
 		playTicksDad.checked = false;
 
-		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
 
@@ -414,7 +422,8 @@ class ChartingState extends MusicBeatState
 		var tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';
 
-		stepperSusLength = new FlxUINumericStepper(10, 10, Conductor.stepCrochet / 2, 0, 0, Conductor.stepCrochet * 16);
+		tab_group_note.add(new FlxText(10, 10, 0, 'Sustain length:'));
+		stepperSusLength = new FlxUINumericStepper(10, 30, Conductor.stepCrochet / 2, 0, 0, Conductor.stepCrochet * 16);
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
@@ -424,12 +433,13 @@ class ChartingState extends MusicBeatState
 		tab_group_note.add(applyLength);
 
 		// note types
-		stepperType = new FlxUINumericStepper(10, 30, Conductor.stepCrochet / 125, 0, 0, (Conductor.stepCrochet / 125) + 10); // 10 is placeholder
+	//	tab_group_note.add(new FlxText(10, 60, 0, 'Note Type:'));
+		stepperType = new FlxUINumericStepper(10, 80, Conductor.stepCrochet / 125, 0, 0, (Conductor.stepCrochet / 125) + 10); // 10 is placeholder
 		// I have no idea what i'm doing lmfao
 		stepperType.value = 0;
-		stepperType.name = 'note_type';
+		stepperType.name = 'blahblahblah';
 
-		tab_group_note.add(stepperType);
+	//	tab_group_note.add(stepperType);
 
 		UI_box.addGroup(tab_group_note);
 		// I'm genuinely tempted to go around and remove every instance of the word "sus" it is genuinely killing me inside
@@ -779,8 +789,8 @@ class ChartingState extends MusicBeatState
 			}
 		}
 
-		if (FlxG.keys.justPressed.ONE) blahblahblah++;
-		if (FlxG.keys.justPressed.TWO) blahblahblah--;
+		if (FlxG.keys.justPressed.RIGHT) blahblahblah++;
+		if (FlxG.keys.justPressed.LEFT) blahblahblah--;
 
 		switch (blahblahblah) {
 			case 1:
@@ -799,9 +809,9 @@ class ChartingState extends MusicBeatState
 		var shiftThing:Int = 1;
 		if (FlxG.keys.pressed.SHIFT)
 			shiftThing = 4;
-		if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
+		if (FlxG.keys.justPressed.D)
 			changeSection(curSection + shiftThing);
-		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
+		if (FlxG.keys.justPressed.A)
 			changeSection(curSection - shiftThing);
 
 		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
@@ -815,9 +825,8 @@ class ChartingState extends MusicBeatState
 			+ curStep
 			+ '\n\nTurn: '
 			+ (!_song.notes[curSection].mustHitSection ? 'Opponent' : 'Player')
-			+ '\nNote Type: '
-			+ (displayNoteType) + ' ($blahblahblah)'
-			+ '\n(press 1 or 2 to switch)';
+			+ '\nNote Type: < '
+			+ (displayNoteType) + ' ($blahblahblah) >';
 
 		super.update(elapsed);
 
@@ -846,6 +855,12 @@ class ChartingState extends MusicBeatState
 		FlxTween.tween(leftIcon, {"scale.x": 0.4, "scale.y": 0.4}, 0.6, {ease: FlxEase.cubeOut});
 		rightIcon.scale.set(0.5, 0.5);
 		FlxTween.tween(rightIcon, {"scale.x": 0.4, "scale.y": 0.4}, 0.6, {ease: FlxEase.cubeOut});
+
+		if (!Init.trueSettings.get("Reduced Movements")) {
+			FlxTween.cancelTweensOf(bg);
+			bg.scale.set(1.05, 1.05);
+			FlxTween.tween(bg, {"scale.x": 1, "scale.y": 1}, 0.6, {ease: FlxEase.cubeOut});
+		}
 	}
 
 	function changeNoteSustain(value:Float):Void

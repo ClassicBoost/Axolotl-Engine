@@ -754,7 +754,7 @@ class PlayState extends MusicBeatState
 			if (!isStoryMode)
 			{
 				// charting state (more on that later)
-				if ((FlxG.keys.justPressed.SEVEN) && (!startingSong) && Init.trueSettings.get("Debug Info"))
+				if ((FlxG.keys.justPressed.SEVEN) && Main.allowChart)
 				{
 					resetMusic();
 				//	if (FlxG.keys.pressed.SHIFT)
@@ -1702,7 +1702,7 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(songData.bpm);
 
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
-		songDetails = CoolUtil.dashToSpace(SONG.song) + ' - ' + CoolUtil.difficultyFromNumber(storyDifficulty);
+		songDetails = CoolUtil.dashToSpace(SONG.song) + ' - ' + CoolUtil.difficultyFromNumber(storyDifficulty) + (Main.devMode ? ' - Dev Mode' : '');
 
 		// String for when the game is paused
 		detailsPausedText = "Paused - " + songDetails;

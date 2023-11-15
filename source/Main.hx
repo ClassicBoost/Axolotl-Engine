@@ -43,8 +43,12 @@ class Main extends Sprite
 	};
 	public static var mainClassState:Class<FlxState> = Init;
 	public static var gameVersion:String = '0.3.1';
-	public static var axolotlVersion:String = '1.1.2';
+	public static var axolotlVersion:String = '1.2';
 	var infoCounter:Overlay;
+
+	// Here's some shit, if you don't want the players to cheat or some shit turn these off.
+	public static var devMode:Bool = true;
+	public static var allowChart:Bool = true;
 
 	// heres gameweeks set up!
 
