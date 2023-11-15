@@ -46,6 +46,7 @@ class ChartLoader
 						// very stupid but I'm lazy
 						if (songNotes.length > 2)
 							daNoteAlt = songNotes[3];
+						var actual_noteType:Float = songNotes[4];
 						/*
 							rest of this code will be mostly unmodified, I don't want to interfere with how FNF chart loading works
 							I'll keep all of the extra features in forever charts, which you'll be able to convert and export to very easily using
@@ -69,9 +70,10 @@ class ChartLoader
 							oldNote = null;
 
 						// create the new note
-						var swagNote:Note = ForeverAssets.generateArrow(PlayState.assetModifier, daStrumTime, daNoteData, 0, daNoteAlt);
+						var swagNote:Note = ForeverAssets.generateArrow(PlayState.assetModifier, daStrumTime, daNoteData, 0, daNoteAlt, actual_noteType);
 						// set note speed
 						swagNote.noteSpeed = songData.speed;
+						swagNote.actual_noteType = songNotes[4];
 
 						// set the note's length (sustain note)
 						swagNote.sustainLength = songNotes[2];
@@ -88,7 +90,7 @@ class ChartLoader
 						{
 							oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 							var sustainNote:Note = ForeverAssets.generateArrow(PlayState.assetModifier,
-								daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, 0, daNoteAlt, true, oldNote);
+								daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, 0, daNoteAlt, true, oldNote, actual_noteType);
 							sustainNote.scrollFactor.set();
 
 							unspawnNotes.push(sustainNote);

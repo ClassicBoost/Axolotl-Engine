@@ -73,6 +73,8 @@ class ChartingState extends MusicBeatState
 
 	var dummyArrow:FlxSprite;
 
+	var blahblahblah:Int = 0;
+
 	var curRenderedNotes:FlxTypedGroup<Note>;
 	var curRenderedSustains:FlxTypedGroup<FlxSprite>;
 
@@ -571,6 +573,7 @@ class ChartingState extends MusicBeatState
 	}
 
 	var lastSongPos:Null<Float> = null;
+	var displayNoteType:String = 'Default';
 
 	override function update(elapsed:Float)
 	{
@@ -776,18 +779,14 @@ class ChartingState extends MusicBeatState
 			}
 		}
 
-		if (FlxG.keys.pressed.ONE) {
-			curNoteType = 1;
-		}
-		if (FlxG.keys.pressed.ZERO) {
-			curNoteType = 0;
-		}
+		if (FlxG.keys.justPressed.ONE) blahblahblah++;
+		if (FlxG.keys.justPressed.TWO) blahblahblah--;
 
-		switch (curNoteType) {
+		switch (blahblahblah) {
 			case 1:
-				noteInfoShit = 'HURT';
+				displayNoteType = 'Hurt';
 			default:
-				noteInfoShit = 'Default';
+				displayNoteType = 'Default';
 		}
 
 		_song.bpm = tempBpm;
@@ -810,14 +809,16 @@ class ChartingState extends MusicBeatState
 			+ Std.string(FlxMath.roundDecimal(songMusic.length / 1000, 2))
 			+ "\nSection: "
 			+ curSection
-			+ '\nNote Type: '
-			+ noteInfoShit
 			+ "\ncurBeat: "
 			+ curBeat
 			+ "\ncurStep: "
 			+ curStep
 			+ '\n\nTurn: '
-			+ (!_song.notes[curSection].mustHitSection ? 'Opponent' : 'Player');
+			+ (!_song.notes[curSection].mustHitSection ? 'Opponent' : 'Player')
+			+ '\nNote Type: '
+			+ (displayNoteType) + ' ($blahblahblah)'
+			+ '\n(press 1 or 2 to switch)';
+
 		super.update(elapsed);
 
 		lastSongPos = Conductor.songPosition;
@@ -1034,11 +1035,12 @@ class ChartingState extends MusicBeatState
 			var daStrumTime = i[0];
 			var daSus = i[2];
 			var daNoteType = 0;
+			var actual_noteType = i[4];
 
 			if (i.length > 2)
 				daNoteType = i[3];
 
-			var note:Note = ForeverAssets.generateArrow(PlayState.assetModifier, daStrumTime, daNoteInfo % 4, daNoteType, 0);
+			var note:Note = ForeverAssets.generateArrow(PlayState.assetModifier, daStrumTime, daNoteInfo % 4, actual_noteType, 0, actual_noteType);
 			note.sustainLength = daSus;
 			note.noteType = daNoteType;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
@@ -1139,16 +1141,16 @@ class ChartingState extends MusicBeatState
 		var noteData = Math.floor(FlxG.mouse.x / GRID_SIZE);
 		var noteType = curNoteType; // define notes as the current type
 		var noteSus = 0; // ninja you will NOT get away with this
+		var actual_noteType = blahblahblah;
 
-		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteType]);
+		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteType, actual_noteType]);
 
 		curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
 
 		if (FlxG.keys.pressed.CONTROL)
 		{
-			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteType]);
+			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteType, actual_noteType]);
 		}
-
 		trace(noteStrum);
 		trace(curSection);
 

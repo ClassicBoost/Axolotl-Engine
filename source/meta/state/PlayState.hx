@@ -597,7 +597,7 @@ class PlayState extends MusicBeatState
 						if (eligable && !fuckYouNoHit)
 						{
 							goodNoteHit(coolNote, boyfriend, boyfriendStrums, firstNote); // then hit the note
-							pressedNotes.push(coolNote);
+							pressedNotes.push(coolNote); // what could happen?
 						}
 						// end of this little check
 					}
@@ -1079,7 +1079,7 @@ class PlayState extends MusicBeatState
 								for (note in daNote.childrenNotes)
 									note.tooLate = true;
 
-								switch (daNote.noteType) {
+								switch (daNote.actual_noteType) {
 									case 1:
 										// do nothing :|
 									default:
@@ -1191,10 +1191,12 @@ class PlayState extends MusicBeatState
 				forceLose = false;
 
 				if (cpuControlled) songScore = 0;
-
-				if (coolNote.noteType == 1) {
+				switch (coolNote.actual_noteType) {
+				case 1:
 					missNoteCheck(true, coolNote.noteData, boyfriend, true);
-				} else {
+					forceLose = true;
+					FlxG.sound.play(Paths.sound('ANGRY')); // test sound
+				default:
 				if (!coolNote.isSustainNote)
 				{
 					goodNotePressed = true;

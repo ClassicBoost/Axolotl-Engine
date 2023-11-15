@@ -25,6 +25,8 @@ class Note extends FNFSprite
 	public var noteAlt:Float = 0;
 	public var noteType:Int = 0;
 	public var noteString:String = "";
+
+	public var actual_noteType:Float = 0;
 	
 	public var eventName:String = '';
 	public var eventVal1:String = '';
@@ -113,7 +115,7 @@ class Note extends FNFSprite
 		these are for all your custom note needs
 	**/
 	
-	public static function returnDefaultNote(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
+	public static function returnDefaultNote(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null, ?actual_noteType:Float = 0):Note
 	{
 		var newNote:Note = new Note(strumTime, noteData, noteAlt, prevNote, isSustainNote);
 		newNote.noteType = noteType;
@@ -150,7 +152,7 @@ class Note extends FNFSprite
 				newNote.setGraphicSize(Std.int(newNote.width * PlayState.daPixelZoom));
 				newNote.updateHitbox();
 			default: // base game arrows for no reason whatsoever
-			switch (noteType) {
+			switch (actual_noteType) {
 				case 1:
 					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('HURTNOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
 					'noteskins/notes'));
@@ -195,7 +197,7 @@ class Note extends FNFSprite
 		return newNote;
 	}
 
-	public static function returnQuantNote(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
+	public static function returnQuantNote(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null, ?actual_noteType:Float = 0):Note
 	{
 		var newNote:Note = new Note(strumTime, noteData, noteAlt, prevNote, isSustainNote);
 
