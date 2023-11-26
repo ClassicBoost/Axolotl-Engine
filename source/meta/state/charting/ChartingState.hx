@@ -795,6 +795,8 @@ class ChartingState extends MusicBeatState
 		switch (blahblahblah) {
 			case 1:
 				displayNoteType = 'Hurt';
+			case 2:
+				displayNoteType = 'GF Note';
 			default:
 				displayNoteType = 'Default';
 		}

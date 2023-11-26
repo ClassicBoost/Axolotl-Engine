@@ -156,6 +156,11 @@ class Note extends FNFSprite
 				case 1:
 					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('HURTNOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
 					'noteskins/notes'));
+				case 2: // the same but because I wanted to this to work for GF.
+					if (Init.trueSettings.get('Debug Info')) // just so you can figure out if it's a modified note
+						newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('debug_note', assetModifier, Init.trueSettings.get("Note Skin"),'noteskins/notes'));
+					else
+						newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),'noteskins/notes'));
 				default:
 					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
 					'noteskins/notes'));

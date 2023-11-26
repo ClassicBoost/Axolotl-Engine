@@ -244,6 +244,7 @@ class FreeplayState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.SPACE) {
 			changeSongPlaying();
+			Conductor.songPosition += elapsed * 1000;
 			for (i in 0...iconArray.length)	iconArray[i].animation.curAnim.curFrame = 0;
 			
 			iconArray[curSelected].animation.curAnim.curFrame = 2;
@@ -384,11 +385,16 @@ class FreeplayState extends MusicBeatState
 
 							var inst:Sound = Paths.inst(songs[curSelected].songName);
 
+							var SONG:SwagSong = Song.loadFromJson(songs[curSelected].songName, songs[curSelected].songName);
+
 							if (index == curSelected && threadActive)
 							{
 								mutex.acquire();
 								songToPlay = inst;
 								mutex.release();
+
+								Conductor.mapBPMChanges(SONG);
+								Conductor.changeBPM(SONG.bpm);
 
 								curSongPlaying = curSelected;
 							}
@@ -406,6 +412,15 @@ class FreeplayState extends MusicBeatState
 	}
 
 	var playingSongs:Array<FlxSound> = [];
+
+	override function beatHit()
+		{
+			super.beatHit();
+	
+			FlxTween.cancelTweensOf(bg);
+			bg.scale.set(1.05, 1.05);
+			FlxTween.tween(bg, {"scale.x": 1, "scale.y": 1}, 0.6, {ease: FlxEase.cubeOut});
+		}
 }
 
 class SongMetadata
