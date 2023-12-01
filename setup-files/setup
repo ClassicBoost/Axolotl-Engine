@@ -3,14 +3,15 @@
 # go to https://haxe.org/download/linux/ to install the latest version of Haxe
 # you may or may not need to run "haxelib setup"
 # you may also need to run "chmod +x setup" to mark this file as an executable
-haxelib install lime
-haxelib install openfl
-haxelib install flixel
-haxelib install flixel-addons
-haxelib install flixel-ui
+haxelib install lime 7.9.0
+haxelib install openfl 9.1.0
+haxelib install flixel 4.11.0
+haxelib install flixel-addons 3.0.2
+haxelib install flixel-ui 2.5.0
 haxelib install hscript
 haxelib install newgrounds
-haxelib install flixel-tools
+haxelib install hxCodec 2.5.1
+haxelib install flixel-tools 1.5.1
 haxelib run flixel-tools setup
 haxelib run lime setup flixel
 haxelib git polymod https://github.com/larsiusprime/polymod.git
