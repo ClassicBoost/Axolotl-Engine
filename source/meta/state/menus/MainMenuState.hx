@@ -191,35 +191,13 @@ class MainMenuState extends MusicBeatState
 					// if single press
 					if (i > 1)
 					{
-						// up is 2 and down is 3
-						// paaaaaiiiiiiinnnnn
 						if (i == 2)
 							curSelected--;
 						else if (i == 3)
 							curSelected++;
 
-						FlxG.sound.play(Paths.sound('scrollMenu'));
+						FlxG.sound.play(Paths.sound('menus/scrollMenu'));
 					}
-					/* idk something about it isn't working yet I'll rewrite it later
-						else
-						{
-							// paaaaaaaiiiiiiiinnnn
-							var curDir:Int = 0;
-							if (i == 0)
-								curDir = -1;
-							else if (i == 1)
-								curDir = 1;
-
-							if (counterControl < 2)
-								counterControl += 0.05;
-
-							if (counterControl >= 1)
-							{
-								curSelected += (curDir * (counterControl / 24));
-								if (curSelected % 1 == 0)
-									FlxG.sound.play(Paths.sound('scrollMenu'));
-							}
-					}*/
 
 					if (curSelected < 0)
 						curSelected = optionShit.length - 1;
@@ -239,7 +217,7 @@ class MainMenuState extends MusicBeatState
 		{
 			//
 			selectedSomethin = true;
-			FlxG.sound.play(Paths.sound('confirmMenu'));
+			FlxG.sound.play(Paths.sound('menus/confirmMenu'));
 
 			FlxFlicker.flicker(magenta, 0.8, 0.1, false);
 

@@ -15,10 +15,10 @@ import meta.state.TitleState;
 class ForeverTools
 {
 	// set up maps and stuffs
-	public static function resetMenuMusic(resetVolume:Bool = false)
+	public static function resetMenuMusic(resetVolume:Bool = false, ?forceReset:Bool = false)
 	{
 		// make sure the music is playing
-		if (((FlxG.sound.music != null) && (!FlxG.sound.music.playing)) || (FlxG.sound.music == null))
+		if ((((FlxG.sound.music != null) && (!FlxG.sound.music.playing)) || (FlxG.sound.music == null)) || forceReset)
 		{
 			var song = (TitleState.randoChance == 100 ? Paths.music('foreverMenu') : TitleState.randoChance == 69 ? Paths.music('bambifreakyMenu') : Paths.music('freakyMenu'));
 			FlxG.sound.playMusic(song, (resetVolume) ? 0 : 0.7);

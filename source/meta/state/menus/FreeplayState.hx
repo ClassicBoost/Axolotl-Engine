@@ -56,6 +56,8 @@ class FreeplayState extends MusicBeatState
 	private var bg:FlxSprite;
 	private var scoreBG:FlxSprite;
 
+	private var isSongPlaying:Bool = false;
+
 	var bgfront:FlxBackdrop;
 
 	private var existingSongs:Array<String> = [];
@@ -84,6 +86,8 @@ class FreeplayState extends MusicBeatState
 		}
 
 		// */
+
+		isSongPlaying = false;
 
 		for (i in folderSongs)
 		{
@@ -237,8 +241,8 @@ class FreeplayState extends MusicBeatState
 
 		if (controls.BACK)
 		{
+			if (isSongPlaying == true) ForeverTools.resetMenuMusic(false, true);
 			threadActive = false;
-			if (curSongPlaying != -1) ForeverTools.resetMenuMusic(false);
 			Main.switchState(this, new MainMenuState());
 		}
 
@@ -314,7 +318,7 @@ class FreeplayState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		if (isSongPlaying == false) FlxG.sound.play(Paths.sound('menus/scrollMenu'), 0.4);
 
 		curSelected += change;
 
@@ -395,6 +399,8 @@ class FreeplayState extends MusicBeatState
 
 								Conductor.mapBPMChanges(SONG);
 								Conductor.changeBPM(SONG.bpm);
+
+								isSongPlaying = true;
 
 								curSongPlaying = curSelected;
 							}

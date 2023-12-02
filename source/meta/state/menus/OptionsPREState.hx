@@ -162,7 +162,7 @@ class OptionsPREState extends MusicBeatState
 	function selectOption(newSelection:Int, playSound:Bool = true)
 	{
 		if ((newSelection != curSelection) && (playSound))
-			FlxG.sound.play(Paths.sound('scrollMenu'));
+			FlxG.sound.play(Paths.sound('menus/scrollMenu'));
 
 		// direction increment finder
 		var directionIncrement = ((newSelection < curSelection) ? -1 : 1);
@@ -283,7 +283,7 @@ class OptionsPREState extends MusicBeatState
 
 		if (controls.BACK)
 		{
-			FlxG.sound.play(Paths.sound('cancelMenu'));
+			FlxG.sound.play(Paths.sound('menus/cancelMenu'));
 			curSelected = 0;
 			if (curCategory != 'main')
 				loadSubgroup('main');
@@ -408,7 +408,7 @@ class OptionsPREState extends MusicBeatState
 					// checkmark basics lol
 					if (controls.ACCEPT)
 					{
-						FlxG.sound.play(Paths.sound('confirmMenu'));
+						FlxG.sound.play(Paths.sound('menus/confirmMenu'));
 						lockedMovement = true;
 						FlxFlicker.flicker(activeSubgroup.members[curSelection], 0.5, 0.06 * 2, true, false, function(flick:FlxFlicker)
 						{
@@ -471,7 +471,7 @@ class OptionsPREState extends MusicBeatState
 			else
 				selector.selectorPlay('right', 'press');
 
-			FlxG.sound.play(Paths.sound('scrollMenu'));
+			FlxG.sound.play(Paths.sound('menus/scrollMenu'));
 
 			originalFPS += increase;
 			selector.chosenOptionString = Std.string(originalFPS);
@@ -495,7 +495,7 @@ class OptionsPREState extends MusicBeatState
 			else
 				selector.selectorPlay('right', 'press');
 
-			FlxG.sound.play(Paths.sound('scrollMenu'));
+			FlxG.sound.play(Paths.sound('menus/scrollMenu'));
 
 			originaldark += increase;
 			selector.chosenOptionString = Std.string(originaldark);
@@ -528,7 +528,7 @@ class OptionsPREState extends MusicBeatState
 			else
 				selector.selectorPlay('right', 'press');
 
-			FlxG.sound.play(Paths.sound('scrollMenu'));
+			FlxG.sound.play(Paths.sound('menus/scrollMenu'));
 
 			selector.chosenOptionString = selector.options[newSelection];
 			selector.optionChosen.text = selector.chosenOptionString;
@@ -542,7 +542,7 @@ class OptionsPREState extends MusicBeatState
 	{
 		if (controls.ACCEPT)
 		{
-			FlxG.sound.play(Paths.sound('confirmMenu'));
+			FlxG.sound.play(Paths.sound('menus/confirmMenu'));
 			lockedMovement = true;
 			FlxFlicker.flicker(activeSubgroup.members[curSelection], 0.5, 0.06 * 2, true, false, function(flick:FlxFlicker)
 			{
@@ -555,7 +555,7 @@ class OptionsPREState extends MusicBeatState
 	{
 		if (controls.ACCEPT)
 		{
-			FlxG.sound.play(Paths.sound('confirmMenu'));
+			FlxG.sound.play(Paths.sound('menus/confirmMenu'));
 			lockedMovement = true;
 			FlxFlicker.flicker(activeSubgroup.members[curSelection], 0.5, 0.06 * 2, true, false, function(flick:FlxFlicker)
 			{
@@ -570,7 +570,7 @@ class OptionsPREState extends MusicBeatState
 		//
 		if (controls.ACCEPT)
 		{
-			FlxG.sound.play(Paths.sound('confirmMenu'));
+			FlxG.sound.play(Paths.sound('menus/confirmMenu'));
 			lockedMovement = true;
 			Init.showPreOptions = false;
 			FlxG.save.flush();

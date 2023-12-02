@@ -144,7 +144,7 @@ class Stage extends FlxTypedGroup<FlxBasic>
 				phillyTrain = new FNFSprite(2000, 360).loadGraphic(Paths.image('backgrounds/' + curStage + '/train'));
 				add(phillyTrain);
 
-				trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
+				trainSound = new FlxSound().loadEmbedded(Paths.sound('stage-specific/train_passes'));
 				FlxG.sound.list.add(trainSound);
 
 				// var cityLights:FNFSprite = new FNFSprite().loadGraphic(AssetPaths.win0.png);
