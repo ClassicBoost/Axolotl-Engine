@@ -52,6 +52,8 @@ class Note extends FNFSprite
 	public var noteSpeed:Float = 0;
 	public var noteDirection:Float = 0;
 
+	public static var showNote:String = 'NOTE_assets';
+
 	public var customScrollspeed:Bool = false;
 
 	public var parentNote:Note;
@@ -120,13 +122,23 @@ class Note extends FNFSprite
 		var newNote:Note = new Note(strumTime, noteData, noteAlt, prevNote, isSustainNote);
 		newNote.noteType = noteType;
 
+		switch (actual_noteType) {
+			case 1:
+				showNote = 'HURTNOTE_assets';
+			case 2:
+				if (Init.trueSettings.get('Debug Info')) showNote = 'debug_note';
+				else showNote = 'NOTE_assets';
+			default:
+				showNote = 'NOTE_assets';
+		}
+
 		// frames originally go here
 		switch (assetModifier)
 		{
 			case 'pixel': // pixel arrows default
 				if (isSustainNote)
 				{
-					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('arrowEnds', assetModifier, Init.trueSettings.get("Note Skin"),
+					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('${showNote}Ends', assetModifier, Init.trueSettings.get("Note Skin"),
 						'noteskins/notes')), true, 7,
 						6);
 					newNote.animation.add('purpleholdend', [4]);
@@ -140,7 +152,7 @@ class Note extends FNFSprite
 				}
 				else
 				{
-					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('arrows-pixels', assetModifier, Init.trueSettings.get("Note Skin"),
+					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('$showNote-pixels', assetModifier, Init.trueSettings.get("Note Skin"),
 						'noteskins/notes')),
 						true, 17, 17);
 					newNote.animation.add('greenScroll', [6]);
@@ -152,19 +164,8 @@ class Note extends FNFSprite
 				newNote.setGraphicSize(Std.int(newNote.width * PlayState.daPixelZoom));
 				newNote.updateHitbox();
 			default: // base game arrows for no reason whatsoever
-			switch (actual_noteType) {
-				case 1:
-					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('HURTNOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
-					'noteskins/notes'));
-				case 2: // the same but because I wanted to this to work for GF.
-					if (Init.trueSettings.get('Debug Info')) // just so you can figure out if it's a modified note
-						newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('debug_note', assetModifier, Init.trueSettings.get("Note Skin"),'noteskins/notes'));
-					else
-						newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),'noteskins/notes'));
-				default:
-					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
-					'noteskins/notes'));
-			}
+				newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset(showNote, assetModifier, Init.trueSettings.get("Note Skin"),
+				'noteskins/notes'));
 				newNote.animation.addByPrefix('greenScroll', 'green0');
 				newNote.animation.addByPrefix('redScroll', 'red0');
 				newNote.animation.addByPrefix('blueScroll', 'blue0');

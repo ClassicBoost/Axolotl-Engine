@@ -52,6 +52,12 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	public static var composerTxt:FlxText;
 
+	public static var msDisplay:String = '';
+	public static var msTxt:FlxText;
+
+	public static var newMS:String = '';
+	public static var addMS:Float = 0.0;
+
 	// eep
 	public function new()
 	{
@@ -97,6 +103,11 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		else {
 			centerMark.y = (FlxG.height / 24) - 10;
 		}
+
+		msTxt = new FlxText(910, 30, 0, '', 20);
+		msTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		msTxt.scrollFactor.set();
+		add(msTxt);
 		
 		composerTxt = new FlxText(5, FlxG.height - 18, 0, "BLAH", 12);
 		composerTxt.scrollFactor.set();
@@ -153,6 +164,9 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		if (PlayState.cpuControlled)
 			scoreBar.text = '[BOTPLAY]';
 
+		msTxt.text = msDisplay;
+		msTxt.alpha -= 0.01;
+
 		updateScoreText();
 	}
 
@@ -171,6 +185,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		{
 		//	scoreBar.text += divider + 'HP: ${PlayState.healthBar.percent}%';
 			scoreBar.text += divider + 'Accuracy: ' + Std.string(Math.floor(Timings.getAccuracy() * 100) / 100) + '%' + Timings.comboDisplay;
+			scoreBar.text += divider + 'AVG MS: ' + (PlayState.songHits == 0 ? 0 : Math.round(addMS/PlayState.songHits));
 			scoreBar.text += divider + 'Combo Breaks: ' + Std.string(PlayState.misses);
 			scoreBar.text += divider + 'Rank: ' + Std.string(Timings.returnScoreRating());
 			if (PlayState.practiceMode) scoreBar.text += divider + 'Practice Mode';
@@ -189,6 +204,8 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 			}
 		}
 
+		msDisplay = (newMS == '' ? '?' : newMS) + ' MS';
+
 		// update playstate
 		PlayState.detailsSub = scoreBar.text;
 		PlayState.updateRPC(false);
@@ -206,6 +223,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	}
 
 	public static function bopScore() {
+		msTxt.alpha = 1;
 		if (!PlayState.cpuControlled) {
 		FlxTween.cancelTweensOf(scoreBar);
 		scoreBar.scale.set(1.075, 1.075);

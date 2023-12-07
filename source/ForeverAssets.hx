@@ -163,7 +163,7 @@ class ForeverAssets
 				// look man you know me I fucking hate repeating code
 				// not even just a cleanliness thing it's just so annoying to tweak if something goes wrong like
 				// genuinely more programmers should make their code more modular
-				var framesArgument:String = "arrows-pixels";
+				var framesArgument:String = "NOTE_assets-pixels";
 				newStaticArrow.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('$framesArgument', assetModifier, Init.trueSettings.get("Note Skin"),
 					'noteskins/notes')), true,
 					17, 17);

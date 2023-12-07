@@ -104,6 +104,8 @@ class PlayState extends MusicBeatState
 	public static var detailsSub:String = "";
 	public static var detailsPausedText:String = "";
 
+	public var bopbopbop:Bool = false;
+
 	private var fuckYouNoHit:Bool = false;
 
 	private static var prevCamFollow:FlxObject;
@@ -170,6 +172,8 @@ class PlayState extends MusicBeatState
 	public static var songLength:Float = 0;
 
 	private var antimashshit:Bool = false;
+
+	public static var songHits:Int = 0;
 
 	// character icons
 	public static var bfIcon:String = 'bf';
@@ -1199,6 +1203,10 @@ class PlayState extends MusicBeatState
 				default:
 				if (!coolNote.isSustainNote)
 				{
+					ClassHUD.newMS = Std.string(Math.round(noteDiff));
+					ClassHUD.addMS += noteDiff;
+					songHits++;
+
 					goodNotePressed = true;
 					increaseCombo(foundRating, coolNote.noteData, character);
 					popUpScore(foundRating, ratingTiming, characterStrums, coolNote);
@@ -1227,9 +1235,7 @@ class PlayState extends MusicBeatState
 				}
 			} else {
 				if (Init.trueSettings.get('Stage Fright') && health > 0.1) health -= 0.01;
-				if (!coolNote.isSustainNote) {
-					opponentSploosh(coolNote, characterStrums);
-				}
+				if (!coolNote.isSustainNote && !Init.trueSettings.get('Disable Note Splashes') && Init.trueSettings.get('Opponent Note Splashes')) opponentSploosh(coolNote, characterStrums);
 			}
 
 			if (!coolNote.isSustainNote)
@@ -1796,10 +1802,8 @@ class PlayState extends MusicBeatState
 
 		bopIcons();
 
-		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0))
-		{
+		if ((FlxG.camera.zoom < 1.35 && curBeat % (bopbopbop == true ? 1 : 4) == 0))
 			cameraBop();
-		}
 
 		if (SONG.notes[Math.floor(curStep / 16)] != null)
 		{
@@ -1832,9 +1836,9 @@ class PlayState extends MusicBeatState
 				}
 			case 'mil':
 				if (curBeat >= 168 && curBeat < 200)
-				{
-					cameraBop();
-				}
+					bopbopbop = true;
+				if (curBeat == 200)
+					bopbopbop = false;
 			case 'thorns':
 				if ((curBeat >= 64 && curBeat < 96) || (curBeat >= 160 && curBeat < 190) || (curBeat >= 256 && curBeat < 288))
 					health = FlxG.random.float(0.01, 2);

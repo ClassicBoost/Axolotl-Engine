@@ -172,6 +172,12 @@ class Init extends FlxState
 			'Whether to disable note splashes in gameplay. Useful if you find them distracting.',
 			NOT_FORCED
 		],
+		'Opponent Note Splashes' => [
+			true,
+			Checkmark,
+			'Whether to allow oppponents to have note splashes in gameplay.',
+			NOT_FORCED
+		],
 		// custom ones lol
 		'Offset' => [Checkmark, 3],
 		'Filter' => [
@@ -323,13 +329,7 @@ class Init extends FlxState
 		if (trueSettings.get("Custom Titlescreen"))
 			Main.switchState(this, new CustomTitlescreen());
 		else {
-			if (showPreOptions || Init.trueSettings.get('Debug Info')) {
-			FlxG.save.data.showPreOptions = false;
-			FlxG.save.flush();
-			Main.switchState(this, new OptionsPREState());
-			}
-			else
-			Main.switchState(this, new TitleState());
+			Main.switchState(this, new WarningState());
 		}
 	}
 
