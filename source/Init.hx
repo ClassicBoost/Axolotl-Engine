@@ -155,7 +155,7 @@ class Init extends FlxState
 		],
 		'Display Accuracy' => [true, Checkmark, 'Whether to display your accuracy on screen.', NOT_FORCED],
 		'Display Average MS' => [true, Checkmark, 'Whether to display your average ms on screen.', NOT_FORCED],
-		'Display Misses' => [true, Checkmark, 'Whether to display your combo reaks on screen.', NOT_FORCED],
+		'Display Misses' => [true, Checkmark, 'Whether to display your combo breaks on screen.', NOT_FORCED],
 		'Display Rank' => [true, Checkmark, 'Whether to display your rank on screen.', NOT_FORCED],
 		'Disable Antialiasing' => [
 			false,

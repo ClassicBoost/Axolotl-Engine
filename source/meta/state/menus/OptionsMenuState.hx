@@ -142,7 +142,7 @@ class OptionsMenuState extends MusicBeatState
 					['Disable Antialiasing', getFromOption],
 					["Stage Opacity", getFromOption],
 					["Opacity Type", getFromOption],
-					['Micd Up Menus', getFromOption],
+				//	['Micd Up Menus', getFromOption],
 				]
 			]
 		];
