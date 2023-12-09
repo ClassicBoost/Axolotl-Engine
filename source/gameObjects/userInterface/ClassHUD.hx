@@ -44,7 +44,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	var infoDisplay:String = CoolUtil.dashToSpace(PlayState.SONG.song);
 	var diffDisplay:String = CoolUtil.difficultyFromNumber(PlayState.storyDifficulty);
-	var engineDisplay:String = "FOREVER ENGINE v" + Main.gameVersion + "\nAXOLOTL ENGINE v" + Main.axolotlVersion + '\n';
+	var engineDisplay:String = "FOREVER ENGINE PLUS v" + Main.axolotlVersion + "(v" + Main.gameVersion + ')\n';
 
 	var composerDisplay:String;
 
@@ -104,8 +104,9 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 			centerMark.y = (FlxG.height / 24) - 10;
 		}
 
-		msTxt = new FlxText(910, 30, 0, '', 20);
-		msTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		msTxt = new FlxText(915, 30, 0, '', 20);
+		msTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		msTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		msTxt.scrollFactor.set();
 		add(msTxt);
 		
@@ -179,17 +180,12 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		var importMisses = PlayState.misses;
 		if (!PlayState.cpuControlled) {
 		scoreBar.text = 'Score: $importSongScore';
-		// testing purposes
-		var displayAccuracy:Bool = Init.trueSettings.get('Display Accuracy');
-		if (displayAccuracy)
-		{
-		//	scoreBar.text += divider + 'HP: ${PlayState.healthBar.percent}%';
-			scoreBar.text += divider + 'Accuracy: ' + Std.string(Math.floor(Timings.getAccuracy() * 100) / 100) + '%' + Timings.comboDisplay;
-			scoreBar.text += divider + 'AVG MS: ' + (PlayState.songHits == 0 ? 0 : Math.round(addMS/PlayState.songHits));
-			scoreBar.text += divider + 'Combo Breaks: ' + Std.string(PlayState.misses);
-			scoreBar.text += divider + 'Rank: ' + Std.string(Timings.returnScoreRating());
-			if (PlayState.practiceMode) scoreBar.text += divider + 'Practice Mode';
-		}
+
+		if (Init.trueSettings.get('Display Accuracy')) scoreBar.text += divider + 'Accuracy: ' + Std.string(Math.floor(Timings.getAccuracy() * 100) / 100) + '%' + Timings.comboDisplay;
+		if (Init.trueSettings.get('Display Average MS')) scoreBar.text += divider + 'AVG MS: ' + (PlayState.songHits == 0 ? 0 : Math.round(addMS/PlayState.songHits));
+		if (Init.trueSettings.get('Display Misses')) scoreBar.text += divider + 'Combo Breaks: ' + Std.string(PlayState.misses);
+		if (Init.trueSettings.get('Display Rank')) scoreBar.text += divider + 'Rank: ' + Std.string(Timings.returnScoreRating());
+		if (PlayState.practiceMode) scoreBar.text += divider + 'Practice Mode';
 		}
 		scoreBar.text += '\n';
 		scoreBar.x = Math.floor((FlxG.width / 2) - (scoreBar.width / 2));

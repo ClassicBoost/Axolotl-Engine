@@ -154,6 +154,9 @@ class Init extends FlxState
 			['None', 'Left', 'Right']
 		],
 		'Display Accuracy' => [true, Checkmark, 'Whether to display your accuracy on screen.', NOT_FORCED],
+		'Display Average MS' => [true, Checkmark, 'Whether to display your average ms on screen.', NOT_FORCED],
+		'Display Misses' => [true, Checkmark, 'Whether to display your combo reaks on screen.', NOT_FORCED],
+		'Display Rank' => [true, Checkmark, 'Whether to display your rank on screen.', NOT_FORCED],
 		'Disable Antialiasing' => [
 			false,
 			Checkmark,
@@ -243,6 +246,7 @@ class Init extends FlxState
 			NOT_FORCED
 		],
 		'Micd Up Menus' => [false, Checkmark, "Changes the menus to be mic\'d up. (VERY UNFINISHED!)"],
+		'New Score' => [true, Checkmark, "Uncheck to use old scoring system"],
 		// MODES
 		'FC Mode' => [false, Checkmark, "You cannot miss, or else you die."],
 		'Avali Accurate' => [false, Checkmark, "You will often miss and health drain is reduced"],

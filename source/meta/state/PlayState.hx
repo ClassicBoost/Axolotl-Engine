@@ -1220,6 +1220,8 @@ class PlayState extends MusicBeatState
 					if (Init.trueSettings.get("Avali Accurate"))
 						fuckYouNoHit = true;
 
+					if (Init.trueSettings.get('New Score')) songScore += Std.int(350 * (1 - (noteDiff / 200)));
+
 					ClassHUD.bopScore();
 				}
 				else if (coolNote.isSustainNote)
@@ -1473,7 +1475,7 @@ class PlayState extends MusicBeatState
 		Timings.updateAccuracy(Timings.judgementsMap.get(baseRating)[3]);
 		score = Std.int(Timings.judgementsMap.get(baseRating)[2]);
 
-		songScore += score;
+		if (!Init.trueSettings.get('New Score')) songScore += score;
 
 		popUpCombo();
 	}
@@ -1575,7 +1577,7 @@ class PlayState extends MusicBeatState
 		forceLose = true;
 
 		// misses
-		songScore -= 10;
+		songScore -= (Init.trueSettings.get('New Score') ? 25 : 10);
 		misses++;
 
 		// display negative combo
