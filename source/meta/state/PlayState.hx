@@ -62,11 +62,6 @@ class PlayState extends MusicBeatState
 	public static var songMusic:FlxSound;
 	public static var vocals:FlxSound;
 
-	public var healthBarBG:FlxSprite;
-	public var healthBar:FlxBar;
-	public var iconP1:HealthIcon;
-	public var iconP2:HealthIcon;
-
 	public var disableStrumCamera:Bool = false;
 
 	public static var choosenfont:String = 'vcr.ttf';
@@ -97,7 +92,7 @@ class PlayState extends MusicBeatState
 	private var camFollow:FlxObject;
 	private var camFollowPos:FlxObject;
 
-	var forceLose:Bool = false;
+	public static var forceLose:Bool = false;
 
 	// Discord RPC variables
 	public static var songDetails:String = "";
@@ -137,7 +132,7 @@ class PlayState extends MusicBeatState
 	var startedCountdown:Bool = false;
 	var inCutscene:Bool = false;
 
-	public var useNewIconBop:Bool = true;
+	public static var useNewIconBop:Bool = true;
 
 	var canPause:Bool = true;
 
@@ -190,6 +185,8 @@ class PlayState extends MusicBeatState
 	// strumlines
 	private var dadStrums:Strumline;
 	private var boyfriendStrums:Strumline;
+
+	public static var isPixelStage:Bool = false;
 
 	public static var strumLines:FlxTypedGroup<Strumline>;
 	public static var strumHUD:Array<FlxCamera> = [];
@@ -316,12 +313,22 @@ class PlayState extends MusicBeatState
 			assetModifier = SONG.assetModifier;
 
 		changeableSkin = Init.trueSettings.get("UI Skin");
-		if ((curStage.startsWith("school"))) {
-			if ((determinedChartType == "FNF"))
-			assetModifier = 'pixel';
 
-			choosenfont = 'pixel.otf';
-		} else choosenfont = 'vcr.ttf';
+		assetModifier = 'base';
+		isPixelStage = false;
+		choosenfont = 'vcr.ttf';
+
+		switch (curStage) {
+			case 'school','schoolEvil':
+				if ((determinedChartType == "FNF"))
+					assetModifier = 'pixel';
+		
+					isPixelStage = true;
+		
+					choosenfont = 'pixel.otf';
+			default:
+				// Nothing ha ha
+		}
 
 		gf.color = 0xFFFFFFFF;
 		dadOpponent.color = 0xFFFFFFFF;
@@ -452,17 +459,8 @@ class PlayState extends MusicBeatState
 		if (Init.trueSettings.get("Show Song Progression"))
 		add(songPosBar);
 
-		var barY = FlxG.height * 0.875;
-		if (Init.trueSettings.get('Downscroll'))
-			barY = 64;
-		healthBarBG = new FlxSprite(0,
-			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
-		healthBarBG.screenCenter(X);
-		healthBarBG.scrollFactor.set();
-		add(healthBarBG);
+		ClassHUD.reloadCharacterIcons(bfIcon, dadIcon, true);
 
-		reloadCharacterIcons();
-		healthBarBG.cameras = [camHUD];
 		uiHUD.cameras = [camHUD];
 		countDown.cameras = [camHUD];
 		//
@@ -632,33 +630,6 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	public function reloadCharacterIcons() {
-		remove(healthBar);
-		remove(iconP1);
-		remove(iconP2);
-
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
-		healthBar.scrollFactor.set();
-	//	healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
-		healthBar.createFilledBar(dadOpponent.barColor, boyfriend.barColor);
-		// healthBar
-		add(healthBar);
-
-		iconP1 = new HealthIcon(PlayState.bfIcon, true);
-		iconP1.y = healthBar.y - (iconP1.height / 2);
-		iconP1.antialiasing = !curStage.startsWith("school");
-		add(iconP1);
-
-		iconP2 = new HealthIcon(PlayState.dadIcon, false);
-		iconP2.y = healthBar.y - (iconP2.height / 2);
-		iconP2.antialiasing = !curStage.startsWith("school");
-		add(iconP2);
-
-		healthBar.cameras = [camHUD];
-		iconP1.cameras = [camHUD];
-		iconP2.cameras = [camHUD];
-	}
-
 	private function getKeyFromEvent(key:FlxKey):Int
 	{
 		if (key != NONE)
@@ -696,30 +667,8 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		healthBar.percent = (health * 50);
-
-		if (!useNewIconBop) {
-		var iconLerp = 0.5;
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.initialWidth, iconP1.width, iconLerp)));
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.initialWidth, iconP2.width, iconLerp)));
-		} else {
-			iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, 0.09 / (Init.trueSettings.get('Framerate Cap') / 60))));
-			iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, 0.09 / (Init.trueSettings.get('Framerate Cap') / 60))));
-		}
-
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
-
-		var iconOffset:Int = 26;
-
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
-
 		if (health > 2)
 			health = 2;
-
-		iconP1.animation.curAnim.curFrame = (healthBar.percent < 20 || forceLose ? 1 : healthBar.percent > 80 ? 2 : 0);
-		iconP2.animation.curAnim.curFrame = (healthBar.percent < 20 || forceLose ? 2 : healthBar.percent > 80 ? 1 : 0);
 
 		if (curSong.toLowerCase() == 'winter-horrorland') blindBG.alpha = (1.25 - (health / 2));
 
@@ -761,10 +710,8 @@ class PlayState extends MusicBeatState
 				if ((FlxG.keys.justPressed.SEVEN) && Main.allowChart)
 				{
 					resetMusic();
-				//	if (FlxG.keys.pressed.SHIFT)
-						Main.switchState(this, new ChartingState());
-				//	else
-				//		Main.switchState(this, new OriginalChartingState());
+					FlxG.sound.play(Paths.sound('menus/scrollMenu'));
+					Main.switchState(this, new ChartingState());
 				}
 
 				if ((FlxG.keys.justPressed.SIX))
@@ -1213,7 +1160,8 @@ class PlayState extends MusicBeatState
 					if (Init.trueSettings.get("Hitsounds")) FlxG.sound.play(Paths.sound('hitsound'), 0.7);
 					if (coolNote.childrenNotes.length > 0)
 						Timings.notesHit++;
-					if (health < 2) health += 0.04;
+
+					healthCall(100);
 					if (Init.trueSettings.get("Anti Mash"))
 					antimashshit = true;
 
@@ -1231,7 +1179,7 @@ class PlayState extends MusicBeatState
 					{
 					//	Timings.updateAccuracy(100, true); // Regularly increase accuracy, I kinda don't like how your accuracy just decreases for a second, especially since it doesn't even give you any.
 						Timings.updateAccuracy(100, true, coolNote.parentNote.childrenNotes.length);
-						if (health < 2) healthCall(100 / coolNote.parentNote.childrenNotes.length);
+						healthCall(100 / coolNote.parentNote.childrenNotes.length);
 					}
 				}
 				}
@@ -1585,7 +1533,7 @@ class PlayState extends MusicBeatState
 		{
 			// doesnt matter miss ratings dont have timings
 			displayRating("miss", 'late');
-			health -= (Init.trueSettings.get("Avali Accurate") ? 0.01 : 0.1);
+			healthCall(-100);
 		}
 		popUpCombo();
 
@@ -1672,8 +1620,9 @@ class PlayState extends MusicBeatState
 
 	function healthCall(?ratingMultiplier:Float = 0)
 	{
-		// health += 0.012;
+		// Finally gonna make this have a use again
 		var healthBase:Float = 0.06;
+		if (health < 2)
 		health += (healthBase * (ratingMultiplier / 100));
 	}
 
@@ -1799,10 +1748,11 @@ class PlayState extends MusicBeatState
 	{
 		super.beatHit();
 
+		// I forgot to put this
+		uiHUD.beatHit();
+
 		antimashshit = false;
 		fuckYouNoHit = false;
-
-		bopIcons();
 
 		if ((FlxG.camera.zoom < 1.35 && curBeat % (bopbopbop == true ? 1 : 4) == 0))
 			cameraBop();
@@ -1847,17 +1797,6 @@ class PlayState extends MusicBeatState
 		}
 		if (curBeat == 8)
 			ClassHUD.fadeOutSongText();
-	}
-
-	function bopIcons() {
-		if (Init.trueSettings.get('Icon Bop'))
-			{
-				iconP1.setGraphicSize(Std.int(iconP1.width + 30));
-				iconP2.setGraphicSize(Std.int(iconP2.width + 30));
-	
-				iconP1.updateHitbox();
-				iconP2.updateHitbox();
-			}
 	}
 
 	function cameraBop(?gamecam:Float = 0.015, ?gamehud:Float = 0.03) {
@@ -2172,7 +2111,8 @@ class PlayState extends MusicBeatState
 
 			Conductor.songPosition = -(Conductor.crochet * (4 - swagCounter));
 			countDown.countdown(swagCounter);
-			bopIcons();
+			// might as well
+			uiHUD.beatHit();
 
 			swagCounter += 1;
 			// generateSong('fresh');

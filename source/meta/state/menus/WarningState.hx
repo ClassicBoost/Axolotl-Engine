@@ -32,11 +32,11 @@ class WarningState extends MusicBeatState
 		warnText = new FlxText(0, 0, FlxG.width,
 			'WARNING\n\n
 			
-			This Engine is in an alpha state\nYeah, that\'s it lol.\n(No I don\'t support what Yoshubs did)\n
+			This Engine is in an alpha state\nYeah, that\'s it lol.\n(I do not support Yoshubs)\n
 
 			${Main.devMode == true ? 'devMode is currently on\nGo to Main.hx to disable this mode.' : ''}
 			
-			Press any ENTER or ESCAPE to Continue',
+			Press ENTER or ESCAPE to Continue',
 			32);
 		warnText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
 		warnText.screenCenter(Y);

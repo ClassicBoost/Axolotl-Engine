@@ -42,6 +42,11 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	private var timingsMap:Map<String, FlxText> = [];
 
+	public static var healthBarBG:FlxSprite;
+	public static var healthBar:FlxBar;
+	public static var iconP1:HealthIcon;
+	public static var iconP2:HealthIcon;
+
 	var infoDisplay:String = CoolUtil.dashToSpace(PlayState.SONG.song);
 	var diffDisplay:String = CoolUtil.difficultyFromNumber(PlayState.storyDifficulty);
 	var engineDisplay:String = "FOREVER ENGINE PLUS v" + Main.axolotlVersion + "(v" + Main.gameVersion + ')\n';
@@ -103,6 +108,29 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		else {
 			centerMark.y = (FlxG.height / 24) - 10;
 		}
+
+		var barY = FlxG.height * 0.875;
+		if (Init.trueSettings.get('Downscroll'))
+			barY = 64;
+		healthBarBG = new FlxSprite(0,
+			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
+		healthBarBG.screenCenter(X);
+		healthBarBG.scrollFactor.set();
+		add(healthBarBG);
+
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
+		healthBar.scrollFactor.set();
+		add(healthBar);
+
+		iconP1 = new HealthIcon('face', true);
+		iconP1.y = healthBar.y - (iconP1.height / 2);
+		iconP1.antialiasing = !PlayState.isPixelStage;
+		add(iconP1);
+
+		iconP2 = new HealthIcon('face', false);
+		iconP2.y = healthBar.y - (iconP2.height / 2);
+		iconP2.antialiasing = !PlayState.isPixelStage;
+		add(iconP2);
 
 		msTxt = new FlxText(915, 30, 0, '', 20);
 		msTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -168,6 +196,28 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		msTxt.text = msDisplay;
 		msTxt.alpha -= 0.01;
 
+		healthBar.percent = (PlayState.health * 50);
+
+		if (!PlayState.useNewIconBop) {
+		var iconLerp = 0.5;
+		iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.initialWidth, iconP1.width, iconLerp)));
+		iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.initialWidth, iconP2.width, iconLerp)));
+		} else {
+			iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, 0.09 / (Init.trueSettings.get('Framerate Cap') / 60))));
+			iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, 0.09 / (Init.trueSettings.get('Framerate Cap') / 60))));
+		}
+
+		iconP1.updateHitbox();
+		iconP2.updateHitbox();
+
+		var iconOffset:Int = 26;
+
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+
+		iconP1.animation.curAnim.curFrame = (healthBar.percent < 20 || PlayState.forceLose ? 1 : healthBar.percent > 80 ? 2 : 0);
+		iconP2.animation.curAnim.curFrame = (healthBar.percent < 20 || PlayState.forceLose ? 2 : healthBar.percent > 80 ? 1 : 0);
+
 		updateScoreText();
 	}
 
@@ -215,7 +265,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	{
 		FlxTween.cancelTweensOf(composerTxt);
 		FlxTween.tween(centerMark, {alpha: (Init.trueSettings.get('Show Song Progression') ? 0.85 : 0)}, 4, {ease: FlxEase.linear});
-		FlxTween.tween(composerTxt, {y: composerTxt.y + 50}, 1, {ease: FlxEase.cubeOut});
+		FlxTween.tween(composerTxt, {y: composerTxt.y + 50}, 2, {ease: FlxEase.cubeOut});
 	}
 
 	public static function bopScore() {
@@ -224,10 +274,27 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		FlxTween.cancelTweensOf(scoreBar);
 		scoreBar.scale.set(1.075, 1.075);
 
-		if (Init.trueSettings.get('Smooth Bop'))
-		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.25, {ease: FlxEase.cubeOut});
-		else
-		FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.2, {ease: FlxEase.linear});
+		if (Init.trueSettings.get('Smooth Bop')) FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.25, {ease: FlxEase.cubeOut});
+		else FlxTween.tween(scoreBar, {"scale.x": 1, "scale.y": 1}, 0.2, {ease: FlxEase.linear});
+		}
 	}
-}
+
+	public static function bopIcons() {
+		iconP1.setGraphicSize(Std.int(iconP1.width + 30));
+		iconP2.setGraphicSize(Std.int(iconP2.width + 30));
+	
+		iconP1.updateHitbox();
+		iconP2.updateHitbox();
+	}
+
+	public static function reloadCharacterIcons(?bfIcon:String, ?dadIcon:String, ?updateBar:Bool = false) {
+		if (updateBar) healthBar.createFilledBar(PlayState.dadOpponent.barColor, PlayState.boyfriend.barColor);
+
+		iconP1.updateIcon(bfIcon,true);
+		iconP2.updateIcon(dadIcon,false);
+	}
+
+	public function beatHit() {
+		if (Init.trueSettings.get('Icon Bop')) bopIcons();
+	}
 }

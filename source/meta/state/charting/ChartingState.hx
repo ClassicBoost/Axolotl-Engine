@@ -118,6 +118,14 @@ class ChartingState extends MusicBeatState
 		bg.antialiasing = true;
 		add(bg);
 
+		var cornerMark = new FlxText(0, 0, 0, 'This is going to get a remake');
+		cornerMark.setFormat(Paths.font('vcr.ttf'), 18, FlxColor.WHITE);
+		cornerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
+		cornerMark.scrollFactor.x = 0;
+		cornerMark.scrollFactor.y = 0;
+		add(cornerMark);
+		cornerMark.setPosition(5, 5);
+
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
