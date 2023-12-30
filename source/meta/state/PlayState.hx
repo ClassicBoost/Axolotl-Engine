@@ -1157,7 +1157,7 @@ class PlayState extends MusicBeatState
 					goodNotePressed = true;
 					increaseCombo(foundRating, coolNote.noteData, character);
 					popUpScore(foundRating, ratingTiming, characterStrums, coolNote);
-					if (Init.trueSettings.get("Hitsounds")) FlxG.sound.play(Paths.sound('hitsound'), 0.7);
+					if (Init.trueSettings.get("Hitsounds")) FlxG.sound.play(Paths.sound('soundNoteTick'), 0.7);
 					if (coolNote.childrenNotes.length > 0)
 						Timings.notesHit++;
 
@@ -1533,7 +1533,7 @@ class PlayState extends MusicBeatState
 		{
 			// doesnt matter miss ratings dont have timings
 			displayRating("miss", 'late');
-			healthCall(-100);
+			health -= 0.1;
 		}
 		popUpCombo();
 
