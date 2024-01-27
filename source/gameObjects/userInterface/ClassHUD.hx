@@ -77,6 +77,26 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		var barY = FlxG.height * 0.875;
 		if (Init.trueSettings.get('Downscroll'))
 			barY = 64;
+		
+		healthBarBG = new FlxSprite(0,
+			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
+		healthBarBG.screenCenter(X);
+		healthBarBG.scrollFactor.set();
+		add(healthBarBG);
+
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
+		healthBar.scrollFactor.set();
+		add(healthBar);
+
+		iconP1 = new HealthIcon('face', true);
+		iconP1.y = healthBar.y - (iconP1.height / 2);
+		iconP1.antialiasing = !PlayState.isPixelStage;
+		add(iconP1);
+
+		iconP2 = new HealthIcon('face', false);
+		iconP2.y = healthBar.y - (iconP2.height / 2);
+		iconP2.antialiasing = !PlayState.isPixelStage;
+		add(iconP2);
 
 		scoreBar = new FlxText(FlxG.width / 2, Math.floor(barY + 40), 0, scoreDisplay);
 		scoreBar.setFormat(Paths.font(PlayState.choosenfont), 18, FlxColor.WHITE);
@@ -108,29 +128,6 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		else {
 			centerMark.y = (FlxG.height / 24) - 10;
 		}
-
-		var barY = FlxG.height * 0.875;
-		if (Init.trueSettings.get('Downscroll'))
-			barY = 64;
-		healthBarBG = new FlxSprite(0,
-			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
-		healthBarBG.screenCenter(X);
-		healthBarBG.scrollFactor.set();
-		add(healthBarBG);
-
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
-		healthBar.scrollFactor.set();
-		add(healthBar);
-
-		iconP1 = new HealthIcon('face', true);
-		iconP1.y = healthBar.y - (iconP1.height / 2);
-		iconP1.antialiasing = !PlayState.isPixelStage;
-		add(iconP1);
-
-		iconP2 = new HealthIcon('face', false);
-		iconP2.y = healthBar.y - (iconP2.height / 2);
-		iconP2.antialiasing = !PlayState.isPixelStage;
-		add(iconP2);
 
 		msTxt = new FlxText(915, 30, 0, '', 20);
 		msTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);

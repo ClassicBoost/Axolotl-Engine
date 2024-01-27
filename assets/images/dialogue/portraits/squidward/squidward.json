@@ -1,0 +1,12 @@
+{
+    "name": "squidward",
+    "expressions": {
+        "normal": "normal"
+    },
+    "position": "left",
+    "sounds": [
+        "pixelText"
+    ],
+    "soundChance": 100,
+    "soundPath": "sounds/"
+}
